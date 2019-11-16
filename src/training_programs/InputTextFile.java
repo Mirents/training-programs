@@ -18,7 +18,7 @@ public class InputTextFile {
 			while((line = br.readLine()) != null)
 			{
 				System.out.println(line);
-				s += line;
+				s += line + " ";
 			}
 			if(s != null) {
 				System.out.println("All text to file");
