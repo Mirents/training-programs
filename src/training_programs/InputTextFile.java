@@ -20,7 +20,7 @@ public class InputTextFile {
 				System.out.println(line);
 				s += line;
 			}
-			if(s!=null)System.out.println(s);
+			if(s!=null) System.out.println(s);
 			
 		} catch(IOException e) {
 			System.out.print("Error " + e);
