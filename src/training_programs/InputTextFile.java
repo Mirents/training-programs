@@ -13,6 +13,7 @@ public class InputTextFile {
 			br = new BufferedReader(new FileReader("history_command.txt"));
 			// Переменная для считывания данных из файла
 			String line;
+			// Создание новой переменной для слияния всей строки
 			String s = "";
 			// Процесс считывания из файла
 			while((line = br.readLine()) != null)
