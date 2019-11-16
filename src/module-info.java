@@ -1,0 +1,2 @@
+module training_programs {
+}
