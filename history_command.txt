@@ -1,2 +1,4 @@
 git commit "Start of work on a new project."
 git push origin master
+git commit "Start of work on a new project."
+git push origin master
