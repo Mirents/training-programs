@@ -10,8 +10,7 @@ public class OddNumbers
         int maxInt;
         Scanner myInt = new Scanner(System.in);
 
-        maxInt = myInt.nextInt();
-        
+        maxInt = myInt.nextInt();        
         System.out.println("Output odd numbers to max " + maxInt);
         for(int i=0; i<=maxInt; i++)
         {
