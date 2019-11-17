@@ -1,4 +1,6 @@
 package training_programs;
+// Output to the console odd numbers
+// from 0 to the entered maximum
 
 import java.util.Scanner;
 
