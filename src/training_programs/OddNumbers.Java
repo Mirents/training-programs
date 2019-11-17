@@ -1,6 +1,8 @@
+package training_programs;
+
 import java.util.Scanner;
 
-public class Program
+public class OddNumbers
 {
     public static void main(String[] args) {
         int maxInt;
