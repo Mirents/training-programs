@@ -22,7 +22,7 @@ public class InputTextFile {
 				s += line + " ";
 			}
 			if(s != null) {
-				System.out.println("All text to file");
+				System.out.println("All text to file:");
 				System.out.println(s);
 			}
 		} catch(IOException e) {
