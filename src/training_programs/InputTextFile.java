@@ -1,4 +1,6 @@
 package training_programs;
+// Reading text from a file and
+// outputting it to the console
 
 import java.io.IOException;
 import java.io.BufferedReader;
