@@ -1,4 +1,5 @@
 package training_programs;
+// Learn to work an Array, Linked and Array List.
 
 import java.util.ArrayList;
 import java.util.LinkedList;
