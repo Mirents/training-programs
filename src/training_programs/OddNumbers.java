@@ -18,5 +18,6 @@ public class OddNumbers
                 System.out.println(i);
             } else {continue;}
         }
+        myInt.close();
     }
 }
