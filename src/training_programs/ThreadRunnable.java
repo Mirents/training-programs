@@ -1,4 +1,5 @@
 package training_programs;
+// Work two methods of Thread
 
 class someThtead extends Thread
 {
@@ -20,7 +21,6 @@ class someRunnable implements Runnable
 			System.out.println("Runnable number " + i);
 		}
 	}
-	
 }
 
 public class ThreadRunnable {
@@ -38,5 +38,4 @@ public class ThreadRunnable {
 		sR1.start();
 		sR2.start();
 	}
-
 }
