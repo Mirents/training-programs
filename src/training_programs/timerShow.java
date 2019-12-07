@@ -9,8 +9,8 @@ public class timerShow {
 		// перерыв, большой перерыв, количество циклов до большого перерыва
 		int countTimerSecond = schemeTimerMinute[thisPeriodTimer]; // Счетчик вреиени
   System.out.println(thisPeriodTimer + " " + circleWorkTimer);
-		while (countTimerSecond > -1) {
-			//countTimerSecond--;
+		while (countTimerSecond > 0) {
+			countTimerSecond--;
 			//System.out.println(countTimerSecond+" min");
 			if(countTimerSecond<=0) {
 				if(thisPeriodTimer==0) {
@@ -33,14 +33,15 @@ public class timerShow {
 					//System.out.println("Отдых закончен!");
 					System.out.println(thisPeriodTimer + " " + circleWorkTimer);
 				} else if (thisPeriodTimer == 2) {
-					thisPeriodTimer = 0;
-					// circleWorkTimer = schemeTimerMinute[thisPeriodTimer];
-					circleWorkTimer = 0;
+					thisPeriodTimer = -1;
+					circleWorkTimer = schemeTimerMinute[3];
+					countTimerSecond = -5;
 					//System.out.println("Отдых закончен!");
 					System.out.println(thisPeriodTimer + " " + circleWorkTimer);
 			}
 		}
-		countTimerSecond--;
+			//System.out.println(countTimerSecond+" min");
+   //countTimerSecond--;
 		}
 	}
 }
