@@ -41,7 +41,8 @@ public class timerShow {
 			}
 		}
 			//System.out.println(countTimerSecond+" min");
-   //countTimerSecond--;
+			//countTimerSecond--;
+			// Составить агоритм и прогнать его в тестовом режиме
 		}
 	}
 }
