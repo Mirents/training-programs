@@ -58,18 +58,23 @@ public class SleepCycles {
 		textScroll.setBounds(5, 30, 500, 150);
 		jPanel.add(textScroll);
 		
-		LocalTime time = LocalTime.of(7, 0);
+		LocalTime time = LocalTime.of(7, 5);
+		int slowSleep = 20; // Фаза медленнго сна
+		int fastSleep = 70; // Фаза быстрого сна
+		int cycleTime = 6; // Максимальное количество циклов
+		int timeToFallSleep = 15; // Время для засыпания
 		
 		jbutton.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				int slowSleep, fastSleep, cycleTime;
-				for(int i = 0; i <= 6; i++) {
-					LocalTime time1 = time.minusMinutes(i*90);
-					textPane.setText(time1.toString() + "\n");
-					System.out.println(time1.toString());
+				String s = "";
+				for(int i = cycleTime; i >= 1; i--) {
+					LocalTime time1 = time.minusMinutes(i*(slowSleep+fastSleep) + timeToFallSleep);
+					s += time1.toString() + "\n";
+					//System.out.println(time1.toString());
 				}
+				textPane.setText(s);
 			}
 		});
 		
