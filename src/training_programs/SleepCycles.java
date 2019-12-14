@@ -4,6 +4,9 @@ import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.time.LocalTime;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -46,12 +49,29 @@ public class SleepCycles {
 		jPanel.add(new JButton("Button 4"));*/
 		
 		jPanel.setLayout(new GridLayout(3,1));
-		jPanel.add(new JButton("Button 1"));
+		JButton jbutton = new JButton("Button 1");
+		jPanel.add(jbutton);
 		JTextField textBox = new JTextField(10);
 		jPanel.add(textBox);
 		JTextPane textPane = new JTextPane();
 		JScrollPane textScroll = new JScrollPane(textPane);
 		textScroll.setBounds(5, 30, 500, 150);
 		jPanel.add(textScroll);
+		
+		LocalTime time = LocalTime.of(7, 0);
+		
+		jbutton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				int slowSleep, fastSleep, cycleTime;
+				for(int i = 0; i <= 6; i++) {
+					LocalTime time1 = time.minusMinutes(i*90);
+					textPane.setText(time1.toString() + "\n");
+					System.out.println(time1.toString());
+				}
+			}
+		});
+		
 	}
 }
