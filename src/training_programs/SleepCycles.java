@@ -13,68 +13,83 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
+import javax.swing.border.EmptyBorder;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 
 public class SleepCycles {
+	
+	private static int slowSleep = 20; // Фаза медленнго сна
+	private static int fastSleep = 70; // Фаза быстрого сна
+	private static int cycleTime = 6; // Максимальное количество циклов
+	private static int timeToFallSleep = 0; // Время для засыпания
 	
 	public static void main(String[] args) {
 
 		JFrame jFrame = new JFrame();
 		jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		jFrame.setSize(300, 300);
-		jFrame.setVisible(true);
+		jFrame.setSize(199, 243);
 		
 		JPanel jPanel = new JPanel();
+		jPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
+		jPanel.setLayout(null);
 		jFrame.getContentPane().add(jPanel);
 		
-		// Менеджер FlowLayout
-		/*jPanel.setLayout(new FlowLayout());
-		jPanel.add(new JButton("Button 1"));
-		JTextField textBox = new JTextField(10);
-		jPanel.add(textBox);
-		JTextPane textPane = new JTextPane();
-		JScrollPane textScroll = new JScrollPane(textPane);
-		textScroll.setBounds(5, 30, 500, 150);
-		textPane.setBounds(5, 30, 500, 150);
-		jPanel.add(textPane);*/
-		
-		// Менеджер BorderLayout
-		/*jPanel.setLayout(new BorderLayout());
-		jPanel.add(new JButton("Button 1"), BorderLayout.NORTH);*/
-		
-		// Менеджер GridLayout
-		/*jPanel.setLayout(new GridLayout(3,3));
-		jPanel.add(new JButton("Button 1"));
-		jPanel.add(new JButton("Button 2"));
-		jPanel.add(new JButton("Button 3"));
-		jPanel.add(new JButton("Button 4"));*/
-		
-		jPanel.setLayout(new GridLayout(3,1));
-		JButton jbutton = new JButton("Button 1");
+		JButton jbutton = new JButton("Рассчитать");
+		jbutton.setBounds(5, 90, 189, 30);
 		jPanel.add(jbutton);
-		JTextField textBox = new JTextField(10);
-		jPanel.add(textBox);
+		
+		JTextField textBoxFastSleep = new JTextField(10);
+		textBoxFastSleep.setSize(40, 25);
+		textBoxFastSleep.setLocation(150, 5);
+		jPanel.add(textBoxFastSleep);
+		JTextField textBoxSlowSleep = new JTextField(10);
+		textBoxSlowSleep.setSize(40, 25);
+		textBoxSlowSleep.setLocation(150, 32);
+		jPanel.add(textBoxSlowSleep);
+		JTextField textBoxTimeToFallSleep = new JTextField(10);
+		textBoxTimeToFallSleep.setSize(40, 25);
+		textBoxTimeToFallSleep.setLocation(150, 60);
+		jPanel.add(textBoxTimeToFallSleep);
+		
 		JTextPane textPane = new JTextPane();
 		JScrollPane textScroll = new JScrollPane(textPane);
-		textScroll.setBounds(5, 30, 500, 150);
+		textScroll.setBounds(5, 125, 189, 80);
 		jPanel.add(textScroll);
 		
+		JLabel lblNewLabel = new JLabel("Быстрый сон:");
+		lblNewLabel.setBounds(5, 5, 135, 15);
+		jPanel.add(lblNewLabel);
+		
+		JLabel label = new JLabel("Медленный сон");
+		label.setBounds(5, 32, 135, 15);
+		jPanel.add(label);
+		
+		JLabel label_1 = new JLabel("Время засыпания:");
+		label_1.setBounds(5, 60, 135, 15);
+		jPanel.add(label_1);
+		
 		LocalTime time = LocalTime.of(7, 5);
-		int slowSleep = 20; // Фаза медленнго сна
-		int fastSleep = 70; // Фаза быстрого сна
-		int cycleTime = 6; // Максимальное количество циклов
-		int timeToFallSleep = 15; // Время для засыпания
+		
+		jFrame.setVisible(true);
 		
 		jbutton.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				String s = "";
-				for(int i = cycleTime; i >= 1; i--) {
-					LocalTime time1 = time.minusMinutes(i*(slowSleep+fastSleep) + timeToFallSleep);
-					s += time1.toString() + "\n";
-					//System.out.println(time1.toString());
+				try {
+					String s = "";
+					fastSleep = Integer.parseInt(textBoxFastSleep.getText());
+					slowSleep = Integer.parseInt(textBoxSlowSleep.getText());
+					timeToFallSleep = Integer.parseInt(textBoxTimeToFallSleep.getText());
+					for(int i = cycleTime; i >= 1; i--) {
+						LocalTime time1 = time.minusMinutes(i*(slowSleep+fastSleep) + timeToFallSleep);
+						s += time1.toString() + "\n";
+					}
+					textPane.setText(s);
+				} catch (Exception e) {
+					JOptionPane.showMessageDialog(null, "Ошибка - введите время!!!");
 				}
-				textPane.setText(s);
 			}
 		});
 		
