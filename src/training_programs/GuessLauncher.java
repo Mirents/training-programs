@@ -6,11 +6,6 @@ public class GuessLauncher {
 }
 
 public class GuessGame {
-  private String name = "123456";
-
-  public String getName() {
-    return name;
-  }
 
   Player p1, p2, p3;
 
@@ -32,9 +27,9 @@ public class GuessGame {
       p2.guess();
       p3.guess();
 
-      System.out.println("Первый игрок думает, что это число: " + p1.getNumber());
-      System.out.println("Второй игрок думает, что это число: " + p2.getNumber());
-      System.out.println("Третий игрок думает, что это число: " + p3.getNumber());
+      System.out.println("Первый игрок думает, что это число: " + p1.guess());
+      System.out.println("Второй игрок думает, что это число: " + p2.guess());
+      System.out.println("Третий игрок думает, что это число: " + p3.guess());
 
       if(p1.getNumber() == targetNumber) {
         System.out.println("Первый игрок выиграл!");
@@ -53,7 +48,8 @@ public class GuessGame {
     private int number = 0;
 
     public int guess() {
-      return (int) (Math.random() * 10);
+      number = (int) (Math.random() * 10);
+      return number;
     }
 
     public int getNumber() {
