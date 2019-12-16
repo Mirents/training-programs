@@ -24,15 +24,40 @@ public class GuessGame {
     int guess_p3 = 0;
 
     int targetNumber = (int) (Math.random() * 10);
-    System.out.println("Загадано число от 1 до 9...");
-    
+
+    while(true) {
+      System.out.println("Нужно угадать число: " + targetNumber);
+
+      p1.guess();
+      p2.guess();
+      p3.guess();
+
+      System.out.println("Первый игрок думает, что это число: " + p1.getNumber());
+      System.out.println("Второй игрок думает, что это число: " + p2.getNumber());
+      System.out.println("Третий игрок думает, что это число: " + p3.getNumber());
+
+      if(p1.getNumber() == targetNumber) {
+        System.out.println("Первый игрок выиграл!");
+        break;
+      } else if(p2.getNumber() == targetNumber) {
+        System.out.println("Второй игрок выиграл!");
+        break;
+      } else if(p3.getNumber() == targetNumber) {
+        System.out.println("Третий игрок выиграл!");
+        break;
+      } else System.out.println("Никто из игроков не угадал число, переиграть заново!");
+    }
   }
-}
 
-public class Player {
-  private number = 0;
+  public class Player {
+    private int number = 0;
 
-  public int guess() {
-    return (int) (Math.random() * 10);
+    public int guess() {
+      return (int) (Math.random() * 10);
+    }
+
+    public int getNumber() {
+      return number;
+    }
   }
 }
