@@ -20,13 +20,16 @@ public class PhraseOMagic {
     int twoLength = wordListTwo.length;
     int threeLength = wordListThree.length;
 
+    // Создание случайных цифр для выборок из каждого массива
     int rand1 = (int) (Math.random() * oneLength);
     int rand2 = (int) (Math.random() * twoLength);
     int rand3 = (int) (Math.random() * threeLength);
 
+    // Создание строки-выборки из массивов
     String phrase = wordListOne[rand1] + " " + wordListTwo[rand2] + " " +
     wordListThree[rand3];
 
+    // Вывод на экран полученной фразы
     System.out.println("Вот: " + phrase);
   }
 }
