@@ -15,7 +15,7 @@ public class Triangle {
       System.out.println(" = " + ta[x].area);
       x++;
     }
-    int y = 0;
+    int y = x;
     x = 27;
     Triangle t5 = ta[2];
     ta[2].area = 343;
