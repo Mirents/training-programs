@@ -3,22 +3,22 @@ public class SimpleDotComTestDrive {
     SimpleDotCom dot = new SimpleDotCom();
     int numOfGuess = 0;
     int startLocations = (int) (Math.random() * 8);
-    System.out.println(startLocations);
-
     startLocations = 2;
+    System.out.println(startLocations + "-" + (startLocations+1) + "-" + (startLocations+2));
+
     int [] locations = {startLocations, startLocations+1, startLocations+2};
     dot.setLocationCells(locations);
 
     while(true) {
-      String userGuess = (int) (Math.random() * 10);
+      String userGuess = Integer.toString((int) (Math.random() * 10));
       System.out.println("Пользователь атакует ячейку: " + userGuess);
       numOfGuess++;
       String result = dot.checkYourself(userGuess);
-      String testResult = "Неудача";
       if (result.equals("Потопил") ) {
-        testResult = "Пройден";
+        System.out.println("Счет равен: " + dot.numOfHits);
+        break;
       } else if (result.equals("Попал")) {
-        System.out.print("Счет равен: " + dot.numOfHits);
+        System.out.println("Счет равен: " + dot.numOfHits);
       }
     }
 
