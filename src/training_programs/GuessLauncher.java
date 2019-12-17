@@ -26,7 +26,7 @@ public class GuessGame {
     while(true) {
       System.out.println("Нужно угадать число: " + targetNumber);
 
-      Каждый из игроков пытается угадать число
+      // Каждый из игроков пытается угадать число
       p1.guess();
       p2.guess();
       p3.guess();
