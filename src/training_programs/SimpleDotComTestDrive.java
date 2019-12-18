@@ -1,9 +1,12 @@
+import java.io.*;
+
 public class SimpleDotComTestDrive {
   public static void main(String [] args) {
     SimpleDotCom dot = new SimpleDotCom();
+    GameInput gi = new GameInput();
+
     int numOfGuess = 0;
     int startLocations = (int) (Math.random() * 8);
-    //startLocations = 2;
     System.out.println(startLocations + "-" + (startLocations+1) + "-" + (startLocations+2));
 
     int [] locations = {startLocations, startLocations+1, startLocations+2};
@@ -11,7 +14,8 @@ public class SimpleDotComTestDrive {
     dot.showLocationCells();
 
     while(true) {
-      String userGuess = Integer.toString((int) (Math.random() * 10));
+      // String userGuess = Integer.toString((int) (Math.random() * 10));
+      String userGuess = gi.getUserInput("Ведите число: ");
       System.out.println("Пользователь атакует ячейку: " + userGuess);
       numOfGuess++;
       String result = dot.checkYourself(userGuess);
@@ -68,7 +72,21 @@ public class SimpleDotCom {
     if (numOfHits == locationCells.length) {
       result = "Потопил";
     }
-
     return result;
+  }
+}
+
+public class GameInput {
+  public String getUserInput(String promt) {
+    String inputLine = null;
+    System.out.print(promt + " ");
+    try {
+      BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+      inputLine = reader.readLine();
+      if (inputLine.length() == 0) return null;
+    } catch (IOException e) {
+      System.out.println("IOException: " + e);
+    }
+    return inputLine;
   }
 }
