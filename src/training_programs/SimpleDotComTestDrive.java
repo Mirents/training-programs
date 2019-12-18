@@ -11,7 +11,7 @@ public class DotComTestDrive {
     DotCom dot = new DotCom(startLocations, 4);
     GameInput gi = new GameInput();
     System.out.println("Цель игры - угадать ячейки, в которых загаданы числа.\n");
-    dot.showLocationCells();
+    dot.showliveCells();
 
     while(true) {
       // String userGuess = Integer.toString((int) (Math.random() * 10));
@@ -20,7 +20,8 @@ public class DotComTestDrive {
       numOfGuess++;
       String result = dot.checkYourself(userGuess);
       if (result.equals("Потопил") ) {
-        System.out.println(" - Корабль потоплен, счет равен: " + dot.numOfHits);
+        System.out.println(" - Корабль потоплен");
+        dot.showliveCells();
         break;
       } else if (result.equals("Попал")) {
         System.out.println(" - Попадание, счет равен: " + dot.numOfHits);
@@ -29,7 +30,7 @@ public class DotComTestDrive {
       } else if (result.equals("Мимо")) {
         System.out.println(" - Промах, счет равен: " + dot.numOfHits);
       }
-      dot.showLocationCells();
+      dot.showliveCells();
     }
 
     System.out.println("Потребовалось " + numOfGuess + " попыток");
@@ -37,38 +38,39 @@ public class DotComTestDrive {
 }
 
 public class DotCom {
-  private ArrayList<Integer> locationCell = new ArrayList<>();
+  private ArrayList<Integer> liveCell = new ArrayList<>();
+  private ArrayList<Integer> deadCell = new ArrayList<>();
   int numOfHits = 0;
   int lengthLocations = 0;
 
   public DotCom(int startLocations, int lengthLocations) {
     this.lengthLocations = lengthLocations;
     for(int i=0; i<lengthLocations; i++) {
-      this.locationCell.add(startLocations);
+      this.liveCell.add(startLocations);
       startLocations++;
     }
   }
-  public void setLocationCells(ArrayList<Integer> loc) {
-    locationCell = loc;
+  public void setliveCells(ArrayList<Integer> loc) {
+    liveCell = loc;
   }
 
-  public void showLocationCells() {
+  public void showliveCells() {
     System.out.print("|");
     for(int i=0; i<10; i++) {
       System.out.print(" " + i + " |");
     }
-    //System.out.print("\n|");
+    System.out.print("\n|");
 
-    /*for(int i=0; i<10; i++) {
+    for(int i=0; i<10; i++) {
       if(isCells(i)) {
         System.out.print(" x |");
       } else System.out.print(" - |");
-    }*/
+    }
     System.out.print("\n");
   }
 
   public boolean isCells(int i) {
-    for(int cells : locationCell) {
+    for(int cells : deadCell) {
       if(i == cells) return true;
     }
     return false;
@@ -76,23 +78,24 @@ public class DotCom {
 
   public String checkYourself(String stringGuess) {
     int guess = Integer.parseInt(stringGuess);
-    int index = locationCell.indexOf(guess);
+    int index = liveCell.indexOf(guess);
     String result = "Мимо";
     numOfHits++;
     if(index >= 0) {
-      locationCell.remove(index);
+      liveCell.remove(index);
+      deadCell.add(guess);
 
-      if(locationCell.isEmpty()) {
+      if(liveCell.isEmpty()) {
         result = "Потопил";
       } else { result = "Попал"; }
     }
-    /*for(int i : locationCell) {
+    /*for(int i : liveCell) {
       if (guess == i) {
         result = "Попал";
         numOfHits++;
-        locationCell.remove(guess);
+        liveCell.remove(guess);
         break;
-      }*/ /*else if (locationCells[guess] == -1) {
+      }*/ /*else if (liveCells[guess] == -1) {
         result = "Уже потоплен";
       }
     }*/
