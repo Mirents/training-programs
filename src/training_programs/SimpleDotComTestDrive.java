@@ -14,7 +14,6 @@ public class DotComTestDrive {
     dot.showliveCells();
 
     while(true) {
-      // String userGuess = Integer.toString((int) (Math.random() * 10));
       String userGuess = gi.getUserInput("Ведите число: ");
       System.out.print("Пользователь выбирает ячейку: " + userGuess);
       numOfGuess++;
