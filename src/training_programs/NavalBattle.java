@@ -12,12 +12,15 @@ public class NavalBattle {
 
   private void setUpGame() {
     // Создание трех кораблей
-    /*for(int i=0; i<3; i++) {
-      ArrayList<String> loc = new ArrayList<String>();
-      loc.add("B" + Integer.toString(i));
-      shipList.add(new Ship("wdd", loc));
+    /*for(int i=0; i<10; i++) {
+      shipList.add(new Ship(setPositionShip()));
     }*/
-
+    ArrayList<String> loc = new ArrayList<String>();
+    loc.add("e2");
+    loc.add("f2");
+    loc.add("g2");
+    loc.add("h2");
+    shipList.add(new Ship(loc));
     ArrayList<String> loc1 = new ArrayList<String>();
     loc1.add("b1");
     loc1.add("b2");
@@ -29,12 +32,6 @@ public class NavalBattle {
     loc2.add("d5");
     loc2.add("e5");
     shipList.add(new Ship(loc2));
-    ArrayList<String> loc3 = new ArrayList<String>();
-    loc3.add("g4");
-    loc3.add("g5");
-    loc3.add("g6");
-    loc3.add("g7");
-    shipList.add(new Ship(loc3));
 
     // Информация начального экрана
     System.out.println("Цель - потопить три корабля");
@@ -57,15 +54,73 @@ public class NavalBattle {
     }
   }
 
+  private ArrayList<String> setPositionShip() {
+    ArrayList<String> loc = new ArrayList<String>();
+    ArrayList<String> locTest = new ArrayList<String>();
+    int startX = (int) (Math.random() * 8);
+    int startY = (int) (Math.random() * 9);
+    if(startX > 7) startX = 7;
+    if(startY > 8) startY = 8;
+    if(startY < 1) startY = 1;
+            //startX = 5;
+            //startY = 8;
+    //if(!locTest.isEmptyField(literPos[startX] + Integer.toString(startY)))
+    {
+      loc.add(literPos[startX] + Integer.toString(startY));
+      int len = (int) (Math.random() * 5);
+      if(len == 0) len = 1;
+              //len = 2;
+      System.out.println("\n" + literPos[startX] + Integer.toString(startY) + " - " + len);
+      int randNapr = 0;
+      while(randNapr >= 0) {
+        randNapr = (int) (Math.random() * 4);
+        if(randNapr == 0) {
+          if((startX+len) <= 7) {
+            for(int i=startX+1; i<=startX+len; i++) {
+              loc.add(literPos[i] + Integer.toString(startY));
+              System.out.println(literPos[i] + Integer.toString(startY) + " ");
+            }
+            randNapr = -1;
+          }
+        } else if(randNapr == 1) {
+          if((startX-len) >= 0) {
+            for(int i=startX-1; i>=startX-len; i--) {
+              loc.add(literPos[i] + Integer.toString(startY));
+              System.out.println(literPos[i] + Integer.toString(startY) + " ");
+            }
+            randNapr = -1;
+          }
+        } else if(randNapr == 2) {
+          if((startY+len) <= 8) {
+            for(int i=startY+1; i<=startY+len; i++) {
+              loc.add(literPos[startX] + Integer.toString(i));
+              System.out.println(literPos[startX] + Integer.toString(i) + " ");
+            }
+            randNapr = -1;
+          }
+        } else if(randNapr == 3){
+          if((startY-len) >= 1) {
+            for(int i=startY-1; i>=startY-len; i--) {
+              loc.add(literPos[startX] + Integer.toString(i));
+              System.out.print(literPos[startX] + Integer.toString(i) + " ");
+            }
+            randNapr = -1;
+          }
+        }
+      }
+    }
+    return loc;
+  }
+
   public void showBattlefield() {
     System.out.print("   ");
-    for(int i=0; i<8; i++) {
+    for(int i=1; i<9; i++) {
       System.out.print(" " + i + "  ");
     }
 
     for(int x=0; x<8; x++) {
       System.out.print("\n" + literPos[x] + " |");
-      for(int y=0; y<8; y++) {
+      for(int y=1; y<9; y++) {
         if(isEmptyField(literPos[x] + Integer.toString(y)))
           System.out.print(" x |");
         else System.out.print(" - |");
