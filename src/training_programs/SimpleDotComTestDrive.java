@@ -3,7 +3,10 @@ import java.io.*;
 public class SimpleDotComTestDrive {
   public static void main(String [] args) {
     int numOfGuess = 0;
-    int startLocations = (int) (Math.random() * 8);
+    int num = 10;
+    int lengthLocations = 4;
+    int startLocations = (int) (Math.random() * (num-lengthLocations+1));
+
     SimpleDotCom dot = new SimpleDotCom(10, startLocations, 4);
     GameInput gi = new GameInput();
     System.out.println("Цель игры - угадать ячейки, в которых загаданы числа.\n");
