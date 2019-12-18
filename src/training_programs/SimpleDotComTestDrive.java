@@ -57,20 +57,13 @@ public class DotCom {
     for(int i=0; i<10; i++) {
       System.out.print(" " + i + " |");
     }
-    System.out.print("\n|");
+    //System.out.print("\n|");
 
-    for(int i=0; i<10; i++) {
-      //System.out.print("|" + locationCells[i]);
+    /*for(int i=0; i<10; i++) {
       if(isCells(i)) {
         System.out.print(" x |");
       } else System.out.print(" - |");
-      /*for(int n : locationCell) {
-        if(i == n) {
-          System.out.print(" x |");
-          break;
-        } else System.out.print(" - |");
-      }*/
-    }
+    }*/
     System.out.print("\n");
   }
 
