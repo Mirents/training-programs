@@ -11,11 +11,17 @@ public class NavalBattle {
 
   private void setUpGame() {
     // Создание трех кораблей
-    for(int i=0; i<3; i++) {
+    /*for(int i=0; i<3; i++) {
       ArrayList<String> loc = new ArrayList<String>();
       loc.add("B" + Integer.toString(i));
       shipList.add(new Ship("wdd", loc));
-    }
+    }*/
+
+    ArrayList<String> loc = new ArrayList<String>();
+    loc.add("11");
+    loc.add("12");
+    loc.add("13");
+    shipList.add(new Ship("wdd", loc));
 
     // Информация начального экрана
     System.out.println("Цель - потопить три корабля");
@@ -27,7 +33,6 @@ public class NavalBattle {
       showBattlefield();
       String userGuess = gameHelper.getUserInput("Сделайте ход: ");
       checkUserGuess(userGuess);
-      break;
     }
   }
 
@@ -48,11 +53,16 @@ public class NavalBattle {
 
   public void checkUserGuess(String userGuess) {
     numOfGuesses++;
-
     String result = "Мимо";
 
     for(Ship shipTest : shipList) {
       result = shipTest.checkIsAttack(userGuess);
+
+      if(result.equals("Попал")) break;
+      if(result.equals("Потопил")) {
+        shipList.remove(shipTest);
+        break;
+      }
     }
   }
 
