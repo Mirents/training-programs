@@ -7,6 +7,7 @@ import java.io.*;
 public class NavalBattle {
   private GameHelper gameHelper = new GameHelper();
   private ArrayList<Ship> shipList = new ArrayList<Ship>();
+  private String [] literPos = {"a", "b", "c", "d", "e", "f", "g", "h"};
   int numOfGuesses = 0;
 
   private void setUpGame() {
@@ -18,9 +19,9 @@ public class NavalBattle {
     }*/
 
     ArrayList<String> loc = new ArrayList<String>();
-    loc.add("11");
-    loc.add("12");
-    loc.add("13");
+    loc.add("a1");
+    loc.add("a2");
+    loc.add("a3");
     shipList.add(new Ship("wdd", loc));
 
     // Информация начального экрана
@@ -33,22 +34,33 @@ public class NavalBattle {
       showBattlefield();
       String userGuess = gameHelper.getUserInput("Сделайте ход: ");
       checkUserGuess(userGuess);
+      //break;
     }
   }
 
   public void showBattlefield() {
+    System.out.print("   ");
     for(int i=0; i<8; i++) {
-      for(int y=0; y<8; y++) {
-        if(!isEmptyField("A"))
-          System.out.print(i);
-        else System.out.print("-");
-      }
-      System.out.print("\n");
+      System.out.print(" " + i + "  ");
     }
+
+    for(int x=0; x<8; x++) {
+      System.out.print("\n" + literPos[x] + " |");
+      for(int y=0; y<8; y++) {
+        if(isEmptyField(literPos[x] + Integer.toString(y)))
+          System.out.print(" x |");
+        else System.out.print(" - |");
+      }
+    }
+    System.out.print("\n");
   }
 
-  public boolean isEmptyField(String address) {
-    return true;
+  public boolean isEmptyField(String pos) {
+    for(Ship shipTest : shipList) {
+      if(shipTest.getDead(pos))
+      return true;
+    }
+    return false;
   }
 
   public void checkUserGuess(String userGuess) {
@@ -68,7 +80,7 @@ public class NavalBattle {
 
   public void finishGame() {
     System.out.println("Все корабли потоплены");
-    System.out.println("Вы сделали это за " + numOfGuesses + " ходов");
+    System.out.println("Вы сделали это за " + numOfGuesses + " хода(ов)");
   }
 
   public static void main(String [] args) {
@@ -83,16 +95,22 @@ public class NavalBattle {
 public class Ship {
   private String name = null;
   private ArrayList<String> locationLivePartsOfShip;
-  private ArrayList<String> locationDeadPartsOfShip;
+  private ArrayList<String> locationDeadPartsOfShip = new ArrayList<String>();
 
   public Ship(String name, ArrayList<String> loc) {
     this.name = name;
     this.locationLivePartsOfShip = loc;
   }
 
+  public boolean getDead(String pos) {
+    if(locationDeadPartsOfShip.indexOf(pos) >= 0) return true;
+    return false;
+  }
+
   public String checkIsAttack(String userGuess) {
     String result = "Мимо";
     int index = locationLivePartsOfShip.indexOf(userGuess);
+
     if(index >= 0) {
       locationDeadPartsOfShip.add(userGuess);
       locationLivePartsOfShip.remove(index);
