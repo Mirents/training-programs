@@ -7,6 +7,7 @@ import java.io.*;
 public class NavalBattle {
   private GameHelper gameHelper = new GameHelper();
   private ArrayList<Ship> shipList = new ArrayList<Ship>();
+  private ArrayList<String> guessList = new ArrayList<String>();
   private String [] literPos = {"a", "b", "c", "d", "e", "f", "g", "h"};
   int numOfGuesses = 0;
 
@@ -43,6 +44,15 @@ public class NavalBattle {
     while(game) {
       showBattlefield();
       String userGuess = gameHelper.getUserInput("Сделайте ход: ");
+
+      /*String userGuess = null;
+      int startX = (int) (Math.random() * 8);
+      int startY = (int) (Math.random() * 9);
+      if(startX > 7) startX = 7;
+      if(startY > 8) startY = 8;
+      if(startY < 1) startY = 1;
+      userGuess = literPos[startX] + Integer.toString(startY);*/
+
       checkUserGuess(userGuess);
       for(Ship shipTest : shipList) {
         if(shipTest.isLive()) {
@@ -62,9 +72,6 @@ public class NavalBattle {
     if(startX > 7) startX = 7;
     if(startY > 8) startY = 8;
     if(startY < 1) startY = 1;
-            //startX = 5;
-            //startY = 8;
-    //if(!locTest.isEmptyField(literPos[startX] + Integer.toString(startY)))
     {
       loc.add(literPos[startX] + Integer.toString(startY));
       int len = (int) (Math.random() * 5);
@@ -121,9 +128,12 @@ public class NavalBattle {
     for(int x=0; x<8; x++) {
       System.out.print("\n" + literPos[x] + " |");
       for(int y=1; y<9; y++) {
-        if(isEmptyField(literPos[x] + Integer.toString(y)))
-          System.out.print(" x |");
-        else System.out.print(" - |");
+        if(guessList.indexOf(literPos[x] + Integer.toString(y)) >= 0) {
+          System.out.print("[");
+          if(isEmptyField(literPos[x] + Integer.toString(y)))
+            System.out.print("X]|");
+          else System.out.print(" ]|");
+        } else System.out.print(" - |");
       }
     }
     System.out.print("\n");
@@ -140,6 +150,7 @@ public class NavalBattle {
   public String checkUserGuess(String userGuess) {
     numOfGuesses++;
     String result = "Мимо";
+    guessList.add(userGuess);
 
     for(Ship shipTest : shipList) {
       result = shipTest.checkIsAttack(userGuess);
