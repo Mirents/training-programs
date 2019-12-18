@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 import java.io.*;
 /*Простая игра наподобие морского боя, где случайным образом на поле размером
-7х7 располагаются корабли, а пользователь угадывает их расположение*/
+8х8 располагаются корабли, а пользователь угадывает их расположение*/
 
 // Основной класс, контролирующий работу программы
 public class NavalBattle {
@@ -64,6 +64,7 @@ public class NavalBattle {
     }
   }
 
+// Не рпюотает метод случайного расположения элементов
   private ArrayList<String> setPositionShip() {
     ArrayList<String> loc = new ArrayList<String>();
     ArrayList<String> locTest = new ArrayList<String>();
