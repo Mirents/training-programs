@@ -18,11 +18,23 @@ public class NavalBattle {
       shipList.add(new Ship("wdd", loc));
     }*/
 
-    ArrayList<String> loc = new ArrayList<String>();
-    loc.add("a1");
-    loc.add("a2");
-    loc.add("a3");
-    shipList.add(new Ship("wdd", loc));
+    ArrayList<String> loc1 = new ArrayList<String>();
+    loc1.add("b1");
+    loc1.add("b2");
+    loc1.add("b3");
+    shipList.add(new Ship(loc1));
+    ArrayList<String> loc2 = new ArrayList<String>();
+    loc2.add("b5");
+    loc2.add("c5");
+    loc2.add("d5");
+    loc2.add("e5");
+    shipList.add(new Ship(loc2));
+    ArrayList<String> loc3 = new ArrayList<String>();
+    loc3.add("g4");
+    loc3.add("g5");
+    loc3.add("g6");
+    loc3.add("g7");
+    shipList.add(new Ship(loc3));
 
     // Информация начального экрана
     System.out.println("Цель - потопить три корабля");
@@ -30,11 +42,18 @@ public class NavalBattle {
   }
 
   public void startPlaying() {
-    while(!shipList.isEmpty()) {
+    boolean game = true;
+    while(game) {
       showBattlefield();
       String userGuess = gameHelper.getUserInput("Сделайте ход: ");
       checkUserGuess(userGuess);
-      //break;
+      for(Ship shipTest : shipList) {
+        if(shipTest.isLive()) {
+          game = true;
+          break;
+        }
+        else game = false;
+      }
     }
   }
 
@@ -63,7 +82,7 @@ public class NavalBattle {
     return false;
   }
 
-  public void checkUserGuess(String userGuess) {
+  public String checkUserGuess(String userGuess) {
     numOfGuesses++;
     String result = "Мимо";
 
@@ -72,10 +91,11 @@ public class NavalBattle {
 
       if(result.equals("Попал")) break;
       if(result.equals("Потопил")) {
-        shipList.remove(shipTest);
+        //shipList.remove(shipTest);
         break;
       }
     }
+    return result;
   }
 
   public void finishGame() {
@@ -93,18 +113,21 @@ public class NavalBattle {
 
 // Класс лодки
 public class Ship {
-  private String name = null;
   private ArrayList<String> locationLivePartsOfShip;
   private ArrayList<String> locationDeadPartsOfShip = new ArrayList<String>();
 
-  public Ship(String name, ArrayList<String> loc) {
-    this.name = name;
+  public Ship(ArrayList<String> loc) {
     this.locationLivePartsOfShip = loc;
   }
 
   public boolean getDead(String pos) {
     if(locationDeadPartsOfShip.indexOf(pos) >= 0) return true;
     return false;
+  }
+
+  public boolean isLive() {
+    if(locationLivePartsOfShip.isEmpty()) return false;
+    else return true;
   }
 
   public String checkIsAttack(String userGuess) {
@@ -114,11 +137,12 @@ public class Ship {
     if(index >= 0) {
       locationDeadPartsOfShip.add(userGuess);
       locationLivePartsOfShip.remove(index);
-    }
 
-    if(locationLivePartsOfShip.isEmpty()) {
-      result = "Потопил";
-    } else result = "Попал";
+      if(locationLivePartsOfShip.isEmpty()) {
+        System.out.println("Корабль потоплен");
+        result = "Потопил";
+      } else result = "Попал";
+    }
 
     return  result;
   }
