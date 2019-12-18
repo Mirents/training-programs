@@ -3,7 +3,7 @@ public class SimpleDotComTestDrive {
     SimpleDotCom dot = new SimpleDotCom();
     int numOfGuess = 0;
     int startLocations = (int) (Math.random() * 8);
-    startLocations = 2;
+    //startLocations = 2;
     System.out.println(startLocations + "-" + (startLocations+1) + "-" + (startLocations+2));
 
     int [] locations = {startLocations, startLocations+1, startLocations+2};
@@ -55,8 +55,8 @@ public class SimpleDotCom {
     String result = "Мимо";
 
     //for (int cell : locationCells) {
-    if (guess == cell && cell != -1) {
-    for(int i=0; i<10; i++) {}
+    //if (guess == cell && cell != -1) {
+    for(int i=0; i<3; i++) {
       if (guess == locationCells[i] && locationCells[i] != -1) {
         result = "Попал";
         numOfHits++;
