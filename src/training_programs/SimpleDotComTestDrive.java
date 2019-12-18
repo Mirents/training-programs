@@ -4,8 +4,9 @@ public class SimpleDotComTestDrive {
   public static void main(String [] args) {
     int numOfGuess = 0;
     int startLocations = (int) (Math.random() * 8);
-    SimpleDotCom dot = new SimpleDotCom(10, startLocations);
+    SimpleDotCom dot = new SimpleDotCom(10, startLocations, 4);
     GameInput gi = new GameInput();
+    System.out.println("Цель игры - угадать ячейки, в которых загаданы числа.\n");
     dot.showLocationCells();
 
     while(true) {
@@ -34,16 +35,14 @@ public class SimpleDotComTestDrive {
 public class SimpleDotCom {
   int [] locationCells;
   int numOfHits = 0;
+  int lengthLocations = 0;
 
-  public SimpleDotCom(int num, int startLocations) {
+  public SimpleDotCom(int num, int startLocations, int lengthLocations) {
     locationCells = new int[num];
-    for(int i=0; i<10; i++) {
-      if(i == startLocations) {
-        locationCells[i] = startLocations;
-      } else if(i == startLocations+1) {
-        locationCells[i] = startLocations+1;
-      } else if(i == startLocations+2) {
-        locationCells[i] = startLocations+2;
+    this.lengthLocations = lengthLocations;
+    for(int i=0; i<num; i++) {
+      if(i >= startLocations && i <= startLocations+lengthLocations-1) {
+        locationCells[i] = 1;
       } else locationCells[i] = 0;
     }
   }
@@ -52,9 +51,17 @@ public class SimpleDotCom {
   }
 
   public void showLocationCells() {
+    System.out.print("|");
     for(int i=0; i<locationCells.length; i++) {
-      if(isCells(i)) System.out.print(-i);
-      else System.out.print("-0");
+      System.out.print(" " + i + " |");
+    }
+    System.out.print("\n|");
+
+    for(int i=0; i<locationCells.length; i++) {
+      //System.out.print("|" + locationCells[i]);
+      if(locationCells[i] == -1) {
+        System.out.print(" x |");
+      } else System.out.print(" - |");
     }
     System.out.print("\n");
   }
@@ -70,18 +77,15 @@ public class SimpleDotCom {
     int guess = Integer.parseInt(stringGuess);
     String result = "Мимо";
 
-    for(int i=0; i<locationCells.length; i++) {
-      if (guess == locationCells[i] && locationCells[i] > 0) {
-        result = "Попал";
-        numOfHits++;
-        locationCells[i] = -1;
-        break;
-      } else if (locationCells[i] == -1) {
-        result = "Уже потоплен";
-      }
+    if (locationCells[guess] == 1) {
+      result = "Попал";
+      numOfHits++;
+      locationCells[guess] = -1;
+    } else if (locationCells[guess] == -1) {
+      result = "Уже потоплен";
     }
 
-    if (numOfHits == 3) {
+    if (numOfHits == lengthLocations) {
       result = "Потопил";
     }
     return result;
@@ -91,7 +95,7 @@ public class SimpleDotCom {
 public class GameInput {
   public String getUserInput(String promt) {
     String inputLine = null;
-    System.out.print("\n" + promt + " ");
+    System.out.print(promt + " ");
     try {
       BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
       inputLine = reader.readLine();
