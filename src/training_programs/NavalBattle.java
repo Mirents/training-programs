@@ -64,7 +64,7 @@ public class NavalBattle {
     }
   }
 
-// Не рпюотает метод случайного расположения элементов
+// Не работает метод случайного расположения элементов
   private ArrayList<String> setPositionShip() {
     ArrayList<String> loc = new ArrayList<String>();
     ArrayList<String> locTest = new ArrayList<String>();
@@ -131,7 +131,7 @@ public class NavalBattle {
       for(int y=1; y<9; y++) {
         if(guessList.indexOf(literPos[x] + Integer.toString(y)) >= 0) {
           System.out.print("[");
-          if(isEmptyField(literPos[x] + Integer.toString(y)))
+          if(isDeadField(literPos[x] + Integer.toString(y)))
             System.out.print("X]|");
           else System.out.print(" ]|");
         } else System.out.print(" - |");
@@ -140,7 +140,7 @@ public class NavalBattle {
     System.out.print("\n");
   }
 
-  public boolean isEmptyField(String pos) {
+  public boolean isDeadField(String pos) {
     for(Ship shipTest : shipList) {
       if(shipTest.getDead(pos))
       return true;
