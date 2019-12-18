@@ -15,7 +15,7 @@ public class SimpleDotComTestDrive {
     while(true) {
       // String userGuess = Integer.toString((int) (Math.random() * 10));
       String userGuess = gi.getUserInput("Ведите число: ");
-      System.out.print("Пользователь атакует ячейку: " + userGuess);
+      System.out.print("Пользователь выбирает ячейку: " + userGuess);
       numOfGuess++;
       String result = dot.checkYourself(userGuess);
       if (result.equals("Потопил") ) {
