@@ -23,7 +23,7 @@ public class SimpleDotComTestDrive {
       }
     }
 
-    System.out.println("Потопил за " + numOfGuess + " ходов");
+    System.out.println("Потребовалось " + numOfGuess + " попыток");
   }
 }
 
