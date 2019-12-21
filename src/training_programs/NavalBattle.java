@@ -8,7 +8,7 @@ public class NavalBattle {
   private GameHelper gameHelper = new GameHelper(); // Вспомогательный класс для работы игры
   private ArrayList<Ship> shipList = new ArrayList<Ship>(); // Список кораблей
   private ArrayList<String> guessList = new ArrayList<String>(); // Список совершенных выстрелов
-  private ArrayList<String> createShipList = new ArrayList<String>(); //Список созданных кораблей для проверки пересечени при создании
+  private ArrayList<String> createShipList = new ArrayList<String>(); //Список созданных кораблей для проверки пересечения при создании
   private String [] literPos = {"a", "b", "c", "d", "e", "f", "g", "h"}; // Буквы координат кораблей
   int numOfGuesses = 0; // Количество побежденных кораблей
 
@@ -37,12 +37,21 @@ public class NavalBattle {
 
       // Дополнительный автоматический игрок
       /*String userGuess = null;
-      int startX = (int) (Math.random() * 8);
-      int startY = (int) (Math.random() * 9);
-      if(startX > 7) startX = 7;
-      if(startY > 8) startY = 8;
-      if(startY < 1) startY = 1;
-      userGuess = literPos[startX] + Integer.toString(startY);*/
+      boolean isEx = true;
+      while(isEx) {
+        int startX = (int) (Math.random() * 8);
+        int startY = (int) (Math.random() * 9);
+        if(startX > 7) startX = 7;
+        if(startY > 8) startY = 8;
+        if(startY < 1) startY = 1;
+        userGuess = literPos[startX] + Integer.toString(startY);
+        for(String shipTest : createShipList) {
+          if(shipTest.indexOf(userGuess) >= 0) {
+            isEx = false;
+            break;
+          }
+        }
+      }*/
 
       // Проверить попадание, засчитать очки
       checkUserGuess(userGuess);
@@ -60,75 +69,97 @@ public class NavalBattle {
 
 // Не работает метод случайного расположения элементов
   private ArrayList<String> setPositionShip() {
+    // Создаем временный корабль
+    ArrayList<String> loc = new ArrayList<String>(); // Начальная позиция корабля
+    boolean enjoy = true;
 
-    // Предустановленный набор кораблей
-    /*ArrayList<String> loc = new ArrayList<String>();
-    loc.add("e2");
-    loc.add("f2");
-    loc.add("g2");
-    loc.add("h2");
-    shipList.add(new Ship(loc));
-    ArrayList<String> loc1 = new ArrayList<String>();
-    loc1.add("b1");
-    loc1.add("b2");
-    loc1.add("b3");
-    shipList.add(new Ship(loc1));
-    ArrayList<String> loc2 = new ArrayList<String>();
-    loc2.add("b5");
-    loc2.add("c5");
-    loc2.add("d5");
-    loc2.add("e5");
-    shipList.add(new Ship(loc2));*/
-
-    ArrayList<String> loc = new ArrayList<String>();
-    ArrayList<String> locTest = new ArrayList<String>();
-    int startX = (int) (Math.random() * 8);
-    int startY = (int) (Math.random() * 9);
-    if(startX > 7) startX = 7;
-    if(startY > 8) startY = 8;
-    if(startY < 1) startY = 1;
-    {
+    // Цикл while пока не создан корабль
+    while(true) {
+      // Загадать случайную позицию для корабля
+      int startX = (int) (Math.random() * 8);
+      int startY = (int) (Math.random() * 9);
+      if(startX > 7) startX = 7;
+      if(startY > 8) startY = 8;
+      if(startY < 1) startY = 1;
       loc.add(literPos[startX] + Integer.toString(startY));
-      int len = (int) (Math.random() * 5);
-      if(len == 0) len = 1;
-              //len = 2;
-      System.out.println("\n" + literPos[startX] + Integer.toString(startY) + " - " + len);
-      int randNapr = 0;
-      while(randNapr >= 0) {
-        randNapr = (int) (Math.random() * 4);
-        if(randNapr == 0) {
-          if((startX+len) <= 7) {
-            for(int i=startX+1; i<=startX+len; i++) {
-              loc.add(literPos[i] + Integer.toString(startY));
-              System.out.println(literPos[i] + Integer.toString(startY) + " ");
-            }
-            randNapr = -1;
-          }
-        } else if(randNapr == 1) {
-          if((startX-len) >= 0) {
-            for(int i=startX-1; i>=startX-len; i--) {
-              loc.add(literPos[i] + Integer.toString(startY));
-              System.out.println(literPos[i] + Integer.toString(startY) + " ");
-            }
-            randNapr = -1;
-          }
-        } else if(randNapr == 2) {
-          if((startY+len) <= 8) {
-            for(int i=startY+1; i<=startY+len; i++) {
-              loc.add(literPos[startX] + Integer.toString(i));
-              System.out.println(literPos[startX] + Integer.toString(i) + " ");
-            }
-            randNapr = -1;
-          }
-        } else if(randNapr == 3){
-          if((startY-len) >= 1) {
-            for(int i=startY-1; i>=startY-len; i--) {
-              loc.add(literPos[startX] + Integer.toString(i));
-              System.out.print(literPos[startX] + Integer.toString(i) + " ");
-            }
-            randNapr = -1;
+      // Если случайная позиция не пересекается со Списком всех кораблей для проверки пересечения
+      // И список всех кораблей не пуст
+      if(createShipList.size() > 0) {
+        for(String shipTest : createShipList) {
+          if(loc.indexOf(shipTest) >= 0) {
+            enjoy = false;
+            break;
           }
         }
+      }
+      // Если случайная точка успешно создана
+      if(enjoy) {
+        // Создать случайную длинну для этого корабля от 1 до 5
+        int len = (int) (Math.random() * 5);
+        if(len == 0) len = 1;
+        ArrayList<String> locP = new ArrayList<String>(); // Тело корабля
+        int snapr = (int) (Math.random() * 5); // Переменая свободных направлений
+        if(snapr == 0) snapr = 1;
+
+        if(snapr == 1) {
+          if((startX+len) <= 7) {
+            for(int i=startX+1; i<=startX+len; i++) {
+              locP.add(literPos[i] + Integer.toString(startY));
+            }
+            for(String shipTest : createShipList) {
+              if(locP.indexOf(shipTest) >= 0) {
+                enjoy = false;
+                break;
+              }
+            }
+          }
+        }
+
+        if(snapr == 2) {
+          if((startX-len) >= 0) {
+            for(int i=startX-1; i>=startX-len; i--) {
+              locP.add(literPos[i] + Integer.toString(startY));
+            }
+            for(String shipTest : createShipList) {
+              if(locP.indexOf(shipTest) >= 0) {
+                enjoy = false;
+                break;
+              }
+            }
+          }
+        }
+        if(snapr == 3) {
+          if((startY+len) <= 8) {
+            for(int i=startY+1; i<=startY+len; i++) {
+              locP.add(literPos[startX] + Integer.toString(i));
+            }
+            for(String shipTest : createShipList) {
+              if(locP.indexOf(shipTest) >= 0) {
+                enjoy = false;
+                break;
+              }
+            }
+          }
+        }
+
+        if(snapr == 4) {
+          if((startY-len) >= 1) {
+            for(int i=startY-1; i>=startY-len; i--) {
+              locP.add(literPos[startX] + Integer.toString(i));
+            }
+            for(String shipTest : createShipList) {
+              if(locP.indexOf(shipTest) >= 0) {
+                enjoy = false;
+                break;
+              }
+            }
+          }
+        }
+        for(String shipTest : locP) {
+          loc.add(shipTest);
+          createShipList.add(shipTest);
+        }
+        break;
       }
     }
     return loc;
@@ -219,7 +250,7 @@ public class Ship {
     return false;
   }
 
-  // Прроверка живучести ячейки
+  // Проверка живучести ячейки
   public boolean isLive() {
     if(locationLivePartsOfShip.isEmpty()) return false;
     else return true;
@@ -238,7 +269,7 @@ public class Ship {
       locationDeadPartsOfShip.add(userGuess);
       locationLivePartsOfShip.remove(index);
 
-      // В счучае потопления корабля указать это
+      // В случае потопления корабля указать это
       if(locationLivePartsOfShip.isEmpty()) {
         System.out.println("Корабль потоплен");
         result = "Потопил";
