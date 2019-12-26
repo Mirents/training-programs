@@ -130,6 +130,7 @@ public class NavalBattle {
             }
           }
         }
+
         if(snapr == 3) {
           if((startY+len) <= 8) {
             for(int i=startY+1; i<=startY+len; i++) {
@@ -186,7 +187,7 @@ public class NavalBattle {
           // Если в ячейке есть пораженная часть корабля - отметить ее
           if(isDeadField(literPos[x] + Integer.toString(y)))
             System.out.print("X]|");
-          else System.out.print(" ]|");
+          else System.out.print("-]|");
         } else System.out.print(" - |");
         // Дополнительно - показать все корабли на поле
         /*if(isLiveField(literPos[x] + Integer.toString(y))) {
@@ -195,10 +196,6 @@ public class NavalBattle {
       }
     }
     System.out.print("\n");
-
-    /*for(Ship s :shipList) {
-      s.show();
-    }*/
   }
 
   // Проверка корабля на пораженные ячейки
