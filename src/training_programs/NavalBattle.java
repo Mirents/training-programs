@@ -67,7 +67,7 @@ public class NavalBattle {
     }
   }
 
-// Не работает метод случайного расположения элементов
+// Метод случайного расположения кораблей
   private ArrayList<String> setPositionShip() {
     // Создаем временный корабль
     ArrayList<String> loc = new ArrayList<String>(); // Начальная позиция корабля
@@ -101,6 +101,8 @@ public class NavalBattle {
         int snapr = (int) (Math.random() * 5); // Переменая свободных направлений
         if(snapr == 0) snapr = 1;
 
+        // В зависимостри от направления и указанной длинны
+        // проверить пересечение с границами  поля и другими кораблями
         if(snapr == 1) {
           if((startX+len) <= 7) {
             for(int i=startX+1; i<=startX+len; i++) {
@@ -155,6 +157,7 @@ public class NavalBattle {
             }
           }
         }
+        // Добавить корабль в список созданных и вернуть вызывающему методу
         for(String shipTest : locP) {
           loc.add(shipTest);
           createShipList.add(shipTest);
@@ -185,15 +188,31 @@ public class NavalBattle {
             System.out.print("X]|");
           else System.out.print(" ]|");
         } else System.out.print(" - |");
+        // Дополнительно - показать все корабли на поле
+        /*if(isLiveField(literPos[x] + Integer.toString(y))) {
+            System.out.print("[X]|");
+        } else System.out.print(" - |");*/
       }
     }
     System.out.print("\n");
+
+    /*for(Ship s :shipList) {
+      s.show();
+    }*/
   }
 
   // Проверка корабля на пораженные ячейки
   public boolean isDeadField(String pos) {
     for(Ship shipTest : shipList) {
       if(shipTest.getDead(pos))
+      return true;
+    }
+    return false;
+  }
+
+  public boolean isLiveField(String pos) {
+    for(Ship shipTest : shipList) {
+      if(shipTest.getLive(pos))
       return true;
     }
     return false;
@@ -220,6 +239,7 @@ public class NavalBattle {
 
   // Финальный метод с указанием счета
   public void finishGame() {
+    showBattlefield();
     System.out.println("Все корабли потоплены");
     System.out.println("Вы сделали это за " + numOfGuesses + " хода(ов)");
   }
@@ -246,14 +266,23 @@ public class Ship {
 
   // Проверка побежденной ячейки корабля для вывода на игровом поле
   public boolean getDead(String pos) {
-    if(locationDeadPartsOfShip.indexOf(pos) >= 0) return true;
+    if(locationDeadPartsOfShip.contains(pos)) return true;
     return false;
   }
 
-  // Проверка живучести ячейки
+  public boolean getLive(String pos) {
+    if(locationLivePartsOfShip.contains(pos)) return true;
+    return false;
+  }
+
+  // Проверка живучести корабля
   public boolean isLive() {
     if(locationLivePartsOfShip.isEmpty()) return false;
     else return true;
+  }
+
+  public void show() {
+    System.out.println(locationLivePartsOfShip);
   }
 
   // Проверка попадания по указанным координатам
