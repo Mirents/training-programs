@@ -1,3 +1,5 @@
+package training_programs;
+
 //package training_programs;
 
 public class testJava {

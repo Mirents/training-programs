@@ -1,3 +1,5 @@
+package training_programs;
+
 public class PhraseOMagic {
   public static void main (String[] args) {
     // Создание трех списков для формирования предложений

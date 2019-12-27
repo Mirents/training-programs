@@ -1,3 +1,5 @@
+package training_programs;
+
 public class Test1 {
   public static void main(String[] args) {
     int x = 0;

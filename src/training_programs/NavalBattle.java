@@ -1,3 +1,5 @@
+//package training_programs;
+
 import java.util.ArrayList;
 import java.io.*;
 /*Простая игра наподобие морского боя, где случайным образом на поле размером

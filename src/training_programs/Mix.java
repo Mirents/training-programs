@@ -1,3 +1,5 @@
+package training_programs;
+
 public class Mix {
   int counter = 0;
 
