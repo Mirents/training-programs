@@ -1,26 +1,20 @@
 package training_programs;
 
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
-import java.awt.FlowLayout;
-import java.awt.GridLayout;
+// Простая программа расчета времени подъема в зависимости от длительности цикла сна
+// и времени засыпания
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.text.SimpleDateFormat;
 import java.time.LocalTime;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JSpinner;
-import javax.swing.SpinnerDateModel;
-import java.util.Date;
-import java.util.Calendar;
 import javax.swing.SpinnerNumberModel;
 
 public class SleepCycles {
@@ -35,6 +29,7 @@ public class SleepCycles {
 	public static void main(String[] args) {
 
 		JFrame jFrame = new JFrame();
+		jFrame.setResizable(false);
 		jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		jFrame.setSize(225, 261);
 		

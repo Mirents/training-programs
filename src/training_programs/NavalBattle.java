@@ -61,7 +61,7 @@ public class NavalBattle {
           game = true;
           break;
         }
-        // В противном случае прекратить
+        // В противном случае прекратить игру
         else game = false;
       }
     }
