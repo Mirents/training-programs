@@ -4,12 +4,30 @@ import java.util.ArrayList;
 
 public class AbstractInterface {
   public static void main(String[] args) {
-    ArrayList<Animals> list = new ArrayList<Animals>();
+    ArrayList<Object> list = new ArrayList<Object>();
     list.add(new Cat("Marusia"));
     list.add(new Byrd("Vorobey"));
 
-    for(Animals a : list)
-      a.makeSound();
+    // Вариант вызова 1
+    for(Object a : list) {
+      Animals A = (Animals) a;
+      A.makeSound();
+    }
+
+    // Вариант вызова 2
+    for(Object a : list) {
+      Animals A = (Animals) a;
+
+      if(A instanceof Cat) {
+        Cat c = (Cat) a;
+        c.makeSound();
+      }
+
+      if(A instanceof Byrd) {
+        Byrd c = (Byrd) a;
+        c.makeSound();
+      }
+    }
   }
 }
 
