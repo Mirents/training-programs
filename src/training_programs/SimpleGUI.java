@@ -4,6 +4,7 @@ import java.awt.*;
 
 public class SimpleGUI implements ActionListener {
     JButton button = new JButton("Click");
+    JFrame frame = new JFrame("Test");
 
   public static void main(String[] args) {
       SimpleGUI sgui = new SimpleGUI();
@@ -11,7 +12,6 @@ public class SimpleGUI implements ActionListener {
   }
 
   public void go() {
-    JFrame frame = new JFrame("Test");
     button.addActionListener(this);
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     frame.getContentPane().add(BorderLayout.SOUTH, button);
