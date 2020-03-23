@@ -9,7 +9,7 @@ import java.awt.*;
 public class SimpleGUI implements ActionListener {
     JButton buttonColor = new JButton("New color");
     JButton buttonText = new JButton("New button label");
-    JFrame frame = new JFrame("Test");
+    JFrame frame = new JFrame("SimpleGUI");
 
   public static void main(String[] args) {
       SimpleGUI sgui = new SimpleGUI();
