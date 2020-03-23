@@ -21,20 +21,28 @@ public class TwoButtons {
       buttonColor.addActionListener(new ColorListener());
       JButton buttonText = new JButton("New button label");
       buttonText.addActionListener(new TextListener());
+      MyFlyingOval paint = new MyFlyingOval();
 
       frame.setSize(300, 300);
       frame.getContentPane().add(BorderLayout.SOUTH, buttonText);
-      frame.getContentPane().add(BorderLayout.CENTER, new MyFlyingOval());
+      frame.getContentPane().add(BorderLayout.CENTER, paint);
       frame.getContentPane().add(BorderLayout.EAST, label);
       frame.getContentPane().add(BorderLayout.WEST, buttonColor);
-
       frame.setVisible(true);
+
+      for(int i=0; i < 150; i ++) {
+        xpos++;
+        ypos++;
+
+        paint.repaint();
+        try {
+          Thread.sleep(70);
+        } catch(Exception ex) {}
+      }
     }
 
     class ColorListener implements ActionListener {
       public void actionPerformed(ActionEvent event) {
-        xpos += 10;
-        ypos += 10;
         frame.repaint();
       }
     }
@@ -47,6 +55,8 @@ public class TwoButtons {
 
     class MyFlyingOval extends JPanel {
         public void paintComponent(Graphics g) {
+          g.setColor(Color.white);
+          g.fillRect(0, 0, this.getWidth(), this.getHeight());
           g.setColor(Color.red);
           g.fillOval(xpos, ypos, 50, 50);
         }
