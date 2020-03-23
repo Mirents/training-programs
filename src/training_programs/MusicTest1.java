@@ -4,7 +4,7 @@ import javax.sound.midi.*;
 
 public class MusicTest1 {
 
-  public void play() {
+  public void play(int note, int instrument) {
     try {
       Sequencer player = MidiSystem.getSequencer();
       player.open();
@@ -12,14 +12,20 @@ public class MusicTest1 {
       Sequence seq = new Sequence(Sequence.PPQ, 4);
 
       Track track = seq.createTrack();
+      MidiEvent mevent = null;
+
+      ShortMessage first = new ShortMessage();
+      first.setMessage(192, 1, instrument, 0);
+      MidiEvent changeInstrument = new MidiEvent(first, 1);
+      track.add(changeInstrument);
 
       ShortMessage a = new ShortMessage();
-      a.setMessage(144, 1, 44, 100);
-      MidiEvent noteOn = new MidiEvent(a, 1);
+      a.setMessage(144, 1, note, 100);
+      MidiEvent noteOn = new MidiEvent(a, 16);
       track.add(noteOn);
 
       ShortMessage b = new ShortMessage();
-      b.setMessage(128, 1, 44, 100);
+      b.setMessage(128, 1, note, 100);
       MidiEvent noteOff = new MidiEvent(b, 16);
       track.add(noteOff);
 
@@ -33,6 +39,12 @@ public class MusicTest1 {
 
   public static void main(String[] args) {
     MusicTest1 mt1 = new MusicTest1();
-    mt1.play();
+    if(args.length < 2)
+      System.out.println("Не забудьте аргументы для инструмента и ноты");
+    else {
+      int note = Integer.parseInt(args[0]);
+      int instrument = Integer.parseInt(args[1]);
+      mt1.play(note, instrument);
+    }
   }
 }
