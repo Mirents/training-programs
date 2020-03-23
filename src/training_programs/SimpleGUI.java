@@ -1,5 +1,6 @@
 import javax.swing.*;
 import java.awt.event.*;
+import java.awt.*;
 
 public class SimpleGUI implements ActionListener {
     JButton button = new JButton("Click");
@@ -13,13 +14,14 @@ public class SimpleGUI implements ActionListener {
     JFrame frame = new JFrame("Test");
     button.addActionListener(this);
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    frame.getContentPane().add(button);
-    frame.setSize(200, 200);
+    frame.getContentPane().add(BorderLayout.SOUTH, button);
+    frame.setSize(300, 300);
+    frame.getContentPane().add(BorderLayout.CENTER, new MyDrawPanel());
 
     frame.setVisible(true);
   }
 
   public void actionPerformed(ActionEvent event) {
-    button.setText("Check!!!");
+    frame.repaint();
   }
 }
