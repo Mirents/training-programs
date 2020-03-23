@@ -2,8 +2,13 @@ import javax.swing.*;
 import java.awt.event.*;
 import java.awt.*;
 
+// Т.к. класс SimpleGUI использует интерфейс ActionListener, он может
+// в одном методе отслеживать отдельные нажатия на разные кнопки.
+// Но с точки зрения ООП это не совсем корректно и желательно
+// пользоваться другим методом, описаным в программе TwoButtons.
 public class SimpleGUI implements ActionListener {
-    JButton button = new JButton("Click");
+    JButton buttonColor = new JButton("New color");
+    JButton buttonText = new JButton("New button label");
     JFrame frame = new JFrame("Test");
 
   public static void main(String[] args) {
@@ -12,9 +17,11 @@ public class SimpleGUI implements ActionListener {
   }
 
   public void go() {
-    button.addActionListener(this);
+    buttonColor.addActionListener(this);
+    buttonText.addActionListener(this);
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    frame.getContentPane().add(BorderLayout.SOUTH, button);
+    frame.getContentPane().add(BorderLayout.SOUTH, buttonColor);
+    frame.getContentPane().add(BorderLayout.NORTH, buttonText);
     frame.setSize(300, 300);
     frame.getContentPane().add(BorderLayout.CENTER, new MyDrawPanel());
 
@@ -22,6 +29,9 @@ public class SimpleGUI implements ActionListener {
   }
 
   public void actionPerformed(ActionEvent event) {
-    frame.repaint();
+    if(event.getSource() == buttonColor)
+      frame.repaint();
+    else
+      buttonText.setText("New text");
   }
 }
