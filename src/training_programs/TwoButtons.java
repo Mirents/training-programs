@@ -2,9 +2,12 @@ import javax.swing.*;
 import java.awt.event.*;
 import java.awt.*;
 
+// Второй способ реализовать несколько  интерфейс для нескольки объектов.
+// При этом не возникает проблемы с доступом к элементам внешнего класса.
 public class TwoButtons {
     private JFrame frame;
     private JLabel label;
+    private int xpos, ypos;
 
     public static void main(String [] args) {
       TwoButtons tb = new TwoButtons();
@@ -21,7 +24,7 @@ public class TwoButtons {
 
       frame.setSize(300, 300);
       frame.getContentPane().add(BorderLayout.SOUTH, buttonText);
-      frame.getContentPane().add(BorderLayout.CENTER, new MyDrawPanel());
+      frame.getContentPane().add(BorderLayout.CENTER, new MyFlyingOval());
       frame.getContentPane().add(BorderLayout.EAST, label);
       frame.getContentPane().add(BorderLayout.WEST, buttonColor);
 
@@ -30,6 +33,8 @@ public class TwoButtons {
 
     class ColorListener implements ActionListener {
       public void actionPerformed(ActionEvent event) {
+        xpos += 10;
+        ypos += 10;
         frame.repaint();
       }
     }
@@ -38,5 +43,12 @@ public class TwoButtons {
       public void actionPerformed(ActionEvent event) {
         label.setText("Test!");
       }
+    }
+
+    class MyFlyingOval extends JPanel {
+        public void paintComponent(Graphics g) {
+          g.setColor(Color.red);
+          g.fillOval(xpos, ypos, 50, 50);
+        }
     }
 }
