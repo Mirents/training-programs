@@ -1,7 +1,7 @@
-package training_programs;
+//package training_programs;
 
 public class timerShow {
- 
+
 	public static void main(String[] args) {
 		int thisPeriodTimer = 0; // Текущий период, 0-работа, 1-отдых, 2-большой перерыв
 		int circleWorkTimer = 1; // Текущий цикл работы до большого перерыва
