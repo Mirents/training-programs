@@ -3,11 +3,6 @@ import javax.swing.*;
 
 class MyDrawPanel extends JPanel {
   public void paintComponent(Graphics g) {
-  /*  g.setColor(Color.red);
-    g.fillRect(0, 0, this.getWidth(), this.getHeight());
-    g.setColor(Color.blue);
-    g.fillOval(70, 70, 100, 100);*/
-
     Graphics2D g2d = (Graphics2D) g;
 
     int red = (int) (Math.random() * 255);
