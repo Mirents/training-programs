@@ -38,8 +38,8 @@ class testJTextField {
 
   class textFieldKeyListener extends KeyAdapter {
     public void keyReleased(KeyEvent event) {
-      if(event.getKeyCode() == KeyEvent.VK_ESCAPE)
-        label.setText("ESCAPE ");
+      //if(event.getKeyCode() == KeyEvent.VK_ESCAPE)
+        label.setText(event.getKeyCode() + "");
     }
   }
 
