@@ -2,12 +2,12 @@ import javax.swing.*;
 import java.awt.event.*;
 import java.awt.*;
 
-// Второй способ реализовать несколько  интерфейс для нескольки объектов.
+// Второй способ реализовать несколько интерфейсов для нескольки объектов.
 // При этом не возникает проблемы с доступом к элементам внешнего класса.
 public class TwoButtons {
     private JFrame frame;
     private JLabel label;
-    private int xpos, ypos;
+    private int xpos, ypos, nx, ny;
 
     public static void main(String [] args) {
       TwoButtons tb = new TwoButtons();
@@ -16,40 +16,46 @@ public class TwoButtons {
 
     public void go() {
       frame = new JFrame("TwoButtons");
-      label = new JLabel("text");
-      JButton buttonColor = new JButton("New color");
-      buttonColor.addActionListener(new ColorListener());
-      JButton buttonText = new JButton("New button label");
-      buttonText.addActionListener(new TextListener());
+      JButton buttonLeft = new JButton("Left");
+      buttonLeft.addActionListener(new LeftListener());
+      JButton buttonRight = new JButton("Right");
+      buttonRight.addActionListener(new RightListener());
       MyFlyingOval paint = new MyFlyingOval();
 
       frame.setSize(300, 300);
-      frame.getContentPane().add(BorderLayout.SOUTH, buttonText);
+      //frame.getContentPane().add(BorderLayout.SOUTH, buttonText);
       frame.getContentPane().add(BorderLayout.CENTER, paint);
-      frame.getContentPane().add(BorderLayout.EAST, label);
-      frame.getContentPane().add(BorderLayout.WEST, buttonColor);
+      frame.getContentPane().add(BorderLayout.SOUTH, buttonLeft);
+      frame.getContentPane().add(BorderLayout.NORTH, buttonRight);
       frame.setVisible(true);
 
-      for(int i=0; i < 150; i ++) {
-        xpos++;
-        ypos++;
-
+      nx = 1;
+      ny = 1;
+      xpos = 1;
+      ypos = 50;
+      for(int i=0; i < 1000; i ++) {
+        if(xpos-1 > 0 && xpos+1 < 300)
+          xpos+=nx;
+        if(xpos == 0 && xpos == 300) {
+            nx *= -1;
+            xpos+=nx;
+        }
         paint.repaint();
         try {
-          Thread.sleep(70);
+          Thread.sleep(50);
         } catch(Exception ex) {}
       }
     }
 
-    class ColorListener implements ActionListener {
+    class LeftListener implements ActionListener {
       public void actionPerformed(ActionEvent event) {
-        frame.repaint();
+        nx = -1;
       }
     }
 
-    class TextListener implements ActionListener {
+    class RightListener implements ActionListener {
       public void actionPerformed(ActionEvent event) {
-        label.setText("Test!");
+        nx = 1;
       }
     }
 
