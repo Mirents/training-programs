@@ -10,7 +10,6 @@ public class QuizCardBuilder extends JFrame {
   Label labelAnswer;
   JTextArea textQuestion;
   JTextArea textAnswer;
-  JButton buttonSave;
   JButton buttonNext;
   ArrayList<QuizAnswer> listQA = new ArrayList<QuizAnswer>();
   int thisQA = 0;
@@ -42,8 +41,6 @@ public class QuizCardBuilder extends JFrame {
     labelQuestion = new Label("Question");
     labelAnswer = new Label("Answer");
 
-    buttonSave = new JButton("Save");
-    buttonSave.addActionListener(new saveActionListener());
     buttonNext = new JButton("Next card");
     buttonNext.addActionListener(new nextActionListener());
 
@@ -53,12 +50,29 @@ public class QuizCardBuilder extends JFrame {
     Box1.add(labelAnswer);
     Box1.add(scrollAnswer);
     Box Box2 = new Box(BoxLayout.X_AXIS);
-    Box2.add(buttonSave);
     Box2.add(buttonNext);
     panel.add(BorderLayout.CENTER, Box1);
     panel.add(BorderLayout.SOUTH, Box2);
 
-    createList();
+    JMenuBar menuBar = new JMenuBar();
+    JMenu fileMenu = new JMenu("File");
+    JMenuItem newMenuItem = new JMenuItem("New");
+    newMenuItem.addActionListener(new NewMenuListener());
+    JMenuItem openMenuItem = new JMenuItem("Open");
+    openMenuItem.addActionListener(new OpenMenuListener());
+    JMenuItem saveMenuItem = new JMenuItem("Save");
+    saveMenuItem.addActionListener(new SaveMenuListener());
+    fileMenu.add(newMenuItem);
+    fileMenu.add(openMenuItem);
+    fileMenu.add(saveMenuItem);
+    menuBar.add(fileMenu);
+    this.setJMenuBar(menuBar);
+
+    listQA.add(new QuizAnswer("1", "2"));
+    listQA.add(new QuizAnswer("e", "t"));
+    listQA.add(new QuizAnswer("s", "4"));
+    textQuestion.setText(listQA.get(0).getQuestion());
+    textAnswer.setText(listQA.get(0).getAnswer());
 
     this.getContentPane().add(panel);
     this.pack();
@@ -67,43 +81,65 @@ public class QuizCardBuilder extends JFrame {
 
   private class nextActionListener implements ActionListener {
     public void actionPerformed(ActionEvent e) {
-      thisQA++;
-      if(thisQA > listQA.size()-1)
-        thisQA = 0;
-      textQuestion.setText(listQA.get(thisQA).getQuestion());
-      textAnswer.setText(listQA.get(thisQA).getAnswer());
+      if(listQA.size() > 0) {
+        thisQA++;
+        if(thisQA >= listQA.size())
+          thisQA = 0;
+        textQuestion.setText(listQA.get(thisQA).getQuestion());
+        textAnswer.setText(listQA.get(thisQA).getAnswer());
+      } /* else if(!textQuestion.getText().equals("") && !textAnswer.getText().equals(""))
+        listQA.add(new QuizAnswer(textQuestion.getText(), textAnswer.getText()));*/
     }
   }
 
-  private class saveActionListener implements ActionListener {
+  private class NewMenuListener implements ActionListener {
     public void actionPerformed(ActionEvent e) {
-      saveList();
+      if(listQA.size() > 0)
+        listQA.clear();
+
+      thisQA = 0;
+      textQuestion.setText("");
+      textAnswer.setText("");
     }
   }
 
-  public void createList() {
-    //listQA.add(new QuizAnswer("1+1", "2"));
-    //listQA.add(new QuizAnswer("1+3", "4"));
-    //listQA.add(new QuizAnswer("2+3", "5"));
-    openList();
-    textQuestion.setText(listQA.get(thisQA).getQuestion());
-    textAnswer.setText(listQA.get(thisQA).getAnswer());
+  private class OpenMenuListener implements ActionListener {
+    public void actionPerformed(ActionEvent e) {
+      JFileChooser fileOpen = new JFileChooser();
+      fileOpen.showOpenDialog(panel);
+      openList(fileOpen.getSelectedFile());
+    }
   }
 
-  private void saveList() {
-    try {
-      ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream("quiz.sp"));
-      for(QuizAnswer q : listQA)
-        os.writeObject(q);
-
-      os.close();
-    } catch(Exception e) { e.printStackTrace(); }
+  private class SaveMenuListener implements ActionListener{
+    public void actionPerformed(ActionEvent e) {
+      JFileChooser fileSave = new JFileChooser();
+      int ret = fileSave.showSaveDialog(panel);
+      if(ret == JFileChooser.APPROVE_OPTION) {
+        File file = fileSave.getSelectedFile();
+        saveList(file);
+      }
+    }
   }
 
-  private void openList() {
+  private void saveList(File file) {
+    if(listQA.size() > 0 && !file.getName().equals("")) {
+      try {
+        ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream(file));
+        for(QuizAnswer q : listQA) {
+          os.writeObject((QuizAnswer) q);
+          System.out.println(q.getQuestion());
+        }
+
+        os.close();
+      } catch(Exception e) { e.printStackTrace(); }
+    }
+  }
+
+  private void openList(File file) {
     listQA.clear();
       try {
-        ObjectInputStream in = new ObjectInputStream(new FileInputStream("quiz.sp"));
+        ObjectInputStream in = new ObjectInputStream(new FileInputStream(file.getName()));
 
         while(true) {
           QuizAnswer t = null;
@@ -111,7 +147,7 @@ public class QuizCardBuilder extends JFrame {
           if(t != null)
           listQA.add((QuizAnswer) t);
         }
-      } catch(EOFException e) { System.out.println("Es!"); } 
+      } catch(EOFException e) { System.out.println("Open work!"); }
       catch(Exception e) { e.printStackTrace(); }
   }
 
@@ -123,6 +159,11 @@ public class QuizCardBuilder extends JFrame {
       this.question = question;
       this.answer = answer;
     }
+
+    /*QuizAnswer() {
+      this.question = "";
+      this.answer = "";
+    }*/
 
     public String getQuestion() {
       return question;
