@@ -118,7 +118,9 @@ public class QuizCardBuilder extends JFrame {
       if(ret == JFileChooser.APPROVE_OPTION) {
         File file = fileSave.getSelectedFile();
         saveList(file);
+        //System.out.println(file.getName());
       }
+      //saveList(new File("xcccc.txt"));
     }
   }
 
@@ -127,11 +129,9 @@ public class QuizCardBuilder extends JFrame {
       try {
         ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream(file));
         for(QuizAnswer q : listQA) {
-          os.writeObject((QuizAnswer) q);
-          System.out.println(q.getQuestion());
+          os.writeObject(q);
         }
-
-        os.close();
+        //os.close();
       } catch(Exception e) { e.printStackTrace(); }
     }
   }
@@ -159,11 +159,6 @@ public class QuizCardBuilder extends JFrame {
       this.question = question;
       this.answer = answer;
     }
-
-    /*QuizAnswer() {
-      this.question = "";
-      this.answer = "";
-    }*/
 
     public String getQuestion() {
       return question;
