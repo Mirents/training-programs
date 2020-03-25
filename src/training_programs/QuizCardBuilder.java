@@ -3,6 +3,7 @@ import java.awt.event.*;
 import javax.swing.*;
 import java.io.*;
 import java.util.*;
+import java.io.FileReader;
 
 public class QuizCardBuilder extends JFrame {
   JPanel panel;
@@ -68,9 +69,9 @@ public class QuizCardBuilder extends JFrame {
     menuBar.add(fileMenu);
     this.setJMenuBar(menuBar);
 
-    listQA.add(new QuizAnswer("1", "2"));
-    listQA.add(new QuizAnswer("e", "t"));
-    listQA.add(new QuizAnswer("s", "4"));
+    listQA.add(new QuizAnswer("Привет, как дела?", "Вася"));
+    listQA.add(new QuizAnswer("Где был?", "Петя"));
+    listQA.add(new QuizAnswer("Как сам?", "Кузя"));
     textQuestion.setText(listQA.get(0).getQuestion());
     textAnswer.setText(listQA.get(0).getAnswer());
 
@@ -89,6 +90,8 @@ public class QuizCardBuilder extends JFrame {
         textAnswer.setText(listQA.get(thisQA).getAnswer());
       } /* else if(!textQuestion.getText().equals("") && !textAnswer.getText().equals(""))
         listQA.add(new QuizAnswer(textQuestion.getText(), textAnswer.getText()));*/
+
+        saveList();
     }
   }
 
@@ -106,40 +109,60 @@ public class QuizCardBuilder extends JFrame {
   private class OpenMenuListener implements ActionListener {
     public void actionPerformed(ActionEvent e) {
       JFileChooser fileOpen = new JFileChooser();
-      fileOpen.showOpenDialog(panel);
-      openList(fileOpen.getSelectedFile());
+      int ret = fileOpen.showOpenDialog(panel);
+      if(ret == JFileChooser.APPROVE_OPTION)
+        openList(fileOpen.getSelectedFile());
     }
   }
 
-  private class SaveMenuListener implements ActionListener{
+  private class SaveMenuListener implements ActionListener {
     public void actionPerformed(ActionEvent e) {
+      boolean b = false;
+      try {
       JFileChooser fileSave = new JFileChooser();
       int ret = fileSave.showSaveDialog(panel);
       if(ret == JFileChooser.APPROVE_OPTION) {
         File file = fileSave.getSelectedFile();
-        saveList(file);
-        //System.out.println(file.getName());
+        if (!file.exists()) {
+          if(file.createNewFile()) {
+            System.out.println("Create file");
+            b = true;
+          }
+            else
+              System.out.println("Dont create file");
+        } else
+          System.out.println("Not file");
       }
-      //saveList(new File("xcccc.txt"));
+    } catch(Exception ex) {
+      System.out.println("___________________2");
+      ex.printStackTrace();
+    }
+    if(b)
+      saveList();
     }
   }
 
-  private void saveList(File file) {
-    if(listQA.size() > 0 && !file.getName().equals("")) {
+  private void saveList() {
+    //if(listQA.size() > 0 && !file.getName().equals(""))
+    {
       try {
-        ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream(file));
+        ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream("GameRR.sp"));
         for(QuizAnswer q : listQA) {
+          System.out.println("Save " + q.getQuestion());
           os.writeObject(q);
         }
-        //os.close();
-      } catch(Exception e) { e.printStackTrace(); }
+        os.close();
+      } catch(Exception e) {
+        System.out.println("___________________1");
+        e.printStackTrace();
+      }
     }
   }
 
   private void openList(File file) {
     listQA.clear();
       try {
-        ObjectInputStream in = new ObjectInputStream(new FileInputStream(file.getName()));
+        ObjectInputStream in = new ObjectInputStream(new FileInputStream(file));
 
         while(true) {
           QuizAnswer t = null;
@@ -152,6 +175,7 @@ public class QuizCardBuilder extends JFrame {
   }
 
   private class QuizAnswer implements Serializable {
+    private transient static final long serialVersionUID = 11111L;
     private String question;
     private String answer;
 
@@ -176,4 +200,32 @@ public class QuizCardBuilder extends JFrame {
       this.question = question;
     }
   }
+
+
+  public class GameCharacter implements Serializable {
+    int power;
+    String type;
+    String weapons;
+
+    public GameCharacter(int p, String t, String w) {
+      power = p;
+      type = t;
+      weapons = w;
+    }
+
+    public String getType() {
+      return type;
+    }
+
+    public int getPower() {
+      return power;
+    }
+
+    public String getWeapons() {
+        return weapons;
+    }
+  }
+
+
+
 }
