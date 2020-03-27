@@ -91,7 +91,7 @@ public class QuizCardBuilder extends JFrame {
       } /* else if(!textQuestion.getText().equals("") && !textAnswer.getText().equals(""))
         listQA.add(new QuizAnswer(textQuestion.getText(), textAnswer.getText()));*/
 
-        saveList();
+        saveList("12345.trt");
     }
   }
 
@@ -109,7 +109,7 @@ public class QuizCardBuilder extends JFrame {
   private class OpenMenuListener implements ActionListener {
     public void actionPerformed(ActionEvent e) {
       JFileChooser fileOpen = new JFileChooser();
-      int ret = fileOpen.showOpenDialog(panel);
+      int ret = fileOpen.showOpenDialog(null);
       if(ret == JFileChooser.APPROVE_OPTION)
         openList(fileOpen.getSelectedFile());
     }
@@ -117,36 +117,31 @@ public class QuizCardBuilder extends JFrame {
 
   private class SaveMenuListener implements ActionListener {
     public void actionPerformed(ActionEvent e) {
-      boolean b = false;
-      try {
-      JFileChooser fileSave = new JFileChooser();
-      int ret = fileSave.showSaveDialog(panel);
-      if(ret == JFileChooser.APPROVE_OPTION) {
-        File file = fileSave.getSelectedFile();
-        if (!file.exists()) {
-          if(file.createNewFile()) {
-            System.out.println("Create file");
-            b = true;
-          }
-            else
-              System.out.println("Dont create file");
-        } else
-          System.out.println("Not file");
-      }
-    } catch(Exception ex) {
-      System.out.println("___________________2");
-      ex.printStackTrace();
-    }
-    if(b)
-      saveList();
+      String s = createSaveFile();
+      saveList(s + ".www");
     }
   }
 
-  private void saveList() {
+  private String createSaveFile() {
+    try {
+    JFileChooser fileSave = new JFileChooser();
+    int ret = fileSave.showSaveDialog(null);
+    if(ret == JFileChooser.APPROVE_OPTION) {
+      File file = fileSave.getSelectedFile();
+        return file.getName();
+    }
+  } catch(Exception ex) {
+    System.out.println("___________________2");
+    ex.printStackTrace();
+  }
+  return null;
+  }
+
+  private void saveList(String file) {
     //if(listQA.size() > 0 && !file.getName().equals(""))
     {
       try {
-        ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream("GameRR.sp"));
+        ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream(file));
         for(QuizAnswer q : listQA) {
           System.out.println("Save " + q.getQuestion());
           os.writeObject(q);
