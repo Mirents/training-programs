@@ -1,6 +1,7 @@
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import javax.swing.filechooser.*;
 import java.io.*;
 import java.util.*;
 import java.io.FileReader;
@@ -74,9 +75,6 @@ public class QuizCardBuilder extends JFrame {
     menuBar.add(fileMenu);
     this.setJMenuBar(menuBar);
 
-    listQA.add(new QuizAnswer("Привет, как дела?", "Вася"));
-    listQA.add(new QuizAnswer("Где был?", "Петя"));
-    listQA.add(new QuizAnswer("Как сам?", "Кузя"));
     textQuestion.setText("");
     textAnswer.setText("");
 
@@ -92,8 +90,6 @@ public class QuizCardBuilder extends JFrame {
         thisQA++;
         textQuestion.setText("");
         textAnswer.setText("");
-        for(QuizAnswer q : listQA)
-          System.out.println("add   " + q.getQuestion());
       }
     }
   }
@@ -106,9 +102,8 @@ public class QuizCardBuilder extends JFrame {
           thisQA = 0;
         textQuestion.setText(listQA.get(thisQA).getQuestion());
         textAnswer.setText(listQA.get(thisQA).getAnswer());
-        for(QuizAnswer q : listQA)
-          System.out.println("next  " + q.getQuestion());
       }
+      System.out.println("thisQA " + thisQA);
     }
   }
 
@@ -125,30 +120,38 @@ public class QuizCardBuilder extends JFrame {
 
   private class OpenMenuListener implements ActionListener {
     public void actionPerformed(ActionEvent e) {
+      FileNameExtensionFilter filter = new FileNameExtensionFilter("Quiz card file", "qcb");
       JFileChooser fileOpen = new JFileChooser();
+      fileOpen.setCurrentDirectory(new File("."));
+      fileOpen.setFileFilter(filter);
       int ret = fileOpen.showOpenDialog(null);
       if(ret == JFileChooser.APPROVE_OPTION)
         openList(fileOpen.getSelectedFile());
+        if(listQA.size() > 0) {
+          textQuestion.setText(listQA.get(0).getQuestion());
+          textAnswer.setText(listQA.get(0).getAnswer());
+        }
     }
   }
 
   private class SaveMenuListener implements ActionListener {
     public void actionPerformed(ActionEvent e) {
       String s = createSaveFile();
-      saveList(s);
+      if(!s.equals(""))
+        saveList(s);
     }
   }
 
   private String createSaveFile() {
     try {
-    JFileChooser fileSave = new JFileChooser();
-    int ret = fileSave.showSaveDialog(null);
-    if(ret == JFileChooser.APPROVE_OPTION) {
-      File file = fileSave.getSelectedFile();
-        return file.getName();
-    }
+      FileNameExtensionFilter filter = new FileNameExtensionFilter("Quiz card file", "qcb");
+      JFileChooser fileSave = new JFileChooser();
+      fileSave.setCurrentDirectory(new File("."));
+      fileSave.setFileFilter(filter);
+      int ret = fileSave.showSaveDialog(null);
+      if(ret == JFileChooser.APPROVE_OPTION)
+        return fileSave.getSelectedFile().getName();
   } catch(Exception ex) {
-    System.out.println("___________________2");
     ex.printStackTrace();
   }
   return null;
@@ -158,7 +161,7 @@ public class QuizCardBuilder extends JFrame {
     if(listQA.size() > 0 && !file.equals(""))
     {
       try {
-        ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream(file + ".qcb"));
+        ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream(file));
         for(QuizAnswer q : listQA) {
           os.writeObject(q);
         }
@@ -171,14 +174,15 @@ public class QuizCardBuilder extends JFrame {
 
   private void openList(File file) {
     listQA.clear();
+    thisQA = 0;
       try {
         ObjectInputStream in = new ObjectInputStream(new FileInputStream(file));
-
         while(true) {
           QuizAnswer t = null;
           t = (QuizAnswer) in.readObject();
-          if(t != null)
-          listQA.add((QuizAnswer) t);
+          if(t != null) {
+            listQA.add((QuizAnswer) t);
+          }
         }
       } catch(EOFException e) { }
       catch(Exception e) { e.printStackTrace(); }
