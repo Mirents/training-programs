@@ -12,6 +12,7 @@ public class QuizCardBuilder extends JFrame {
   JTextArea textQuestion;
   JTextArea textAnswer;
   JButton buttonNext;
+  JButton buttonAdd;
   ArrayList<QuizAnswer> listQA = new ArrayList<QuizAnswer>();
   int thisQA = 0;
 
@@ -43,7 +44,10 @@ public class QuizCardBuilder extends JFrame {
     labelAnswer = new Label("Answer");
 
     buttonNext = new JButton("Next card");
-    buttonNext.addActionListener(new nextActionListener());
+    buttonNext.addActionListener(new NextActionListener());
+
+    buttonAdd = new JButton("Add new card");
+    buttonAdd.addActionListener(new AddActionListener());
 
     Box Box1 = new Box(BoxLayout.Y_AXIS);
     Box1.add(labelQuestion);
@@ -52,16 +56,17 @@ public class QuizCardBuilder extends JFrame {
     Box1.add(scrollAnswer);
     Box Box2 = new Box(BoxLayout.X_AXIS);
     Box2.add(buttonNext);
+    Box2.add(buttonAdd);
     panel.add(BorderLayout.CENTER, Box1);
     panel.add(BorderLayout.SOUTH, Box2);
 
     JMenuBar menuBar = new JMenuBar();
     JMenu fileMenu = new JMenu("File");
-    JMenuItem newMenuItem = new JMenuItem("New");
+    JMenuItem newMenuItem = new JMenuItem("New list");
     newMenuItem.addActionListener(new NewMenuListener());
-    JMenuItem openMenuItem = new JMenuItem("Open");
+    JMenuItem openMenuItem = new JMenuItem("Open list");
     openMenuItem.addActionListener(new OpenMenuListener());
-    JMenuItem saveMenuItem = new JMenuItem("Save");
+    JMenuItem saveMenuItem = new JMenuItem("Save list");
     saveMenuItem.addActionListener(new SaveMenuListener());
     fileMenu.add(newMenuItem);
     fileMenu.add(openMenuItem);
@@ -72,15 +77,28 @@ public class QuizCardBuilder extends JFrame {
     listQA.add(new QuizAnswer("Привет, как дела?", "Вася"));
     listQA.add(new QuizAnswer("Где был?", "Петя"));
     listQA.add(new QuizAnswer("Как сам?", "Кузя"));
-    textQuestion.setText(listQA.get(0).getQuestion());
-    textAnswer.setText(listQA.get(0).getAnswer());
+    textQuestion.setText("");
+    textAnswer.setText("");
 
     this.getContentPane().add(panel);
     this.pack();
     this.setVisible(true);
   }
 
-  private class nextActionListener implements ActionListener {
+  private class AddActionListener implements ActionListener {
+    public void actionPerformed(ActionEvent e) {
+      if(!textQuestion.getText().equals("") && !textAnswer.getText().equals("")) {
+        listQA.add(new QuizAnswer(textQuestion.getText(), textAnswer.getText()));
+        thisQA++;
+        textQuestion.setText("");
+        textAnswer.setText("");
+        for(QuizAnswer q : listQA)
+          System.out.println("add   " + q.getQuestion());
+      }
+    }
+  }
+
+  private class NextActionListener implements ActionListener {
     public void actionPerformed(ActionEvent e) {
       if(listQA.size() > 0) {
         thisQA++;
@@ -88,10 +106,9 @@ public class QuizCardBuilder extends JFrame {
           thisQA = 0;
         textQuestion.setText(listQA.get(thisQA).getQuestion());
         textAnswer.setText(listQA.get(thisQA).getAnswer());
-      } /* else if(!textQuestion.getText().equals("") && !textAnswer.getText().equals(""))
-        listQA.add(new QuizAnswer(textQuestion.getText(), textAnswer.getText()));*/
-
-        saveList("12345.trt");
+        for(QuizAnswer q : listQA)
+          System.out.println("next  " + q.getQuestion());
+      }
     }
   }
 
@@ -138,17 +155,15 @@ public class QuizCardBuilder extends JFrame {
   }
 
   private void saveList(String file) {
-    if(listQA.size() > 0 && !file.getName().equals(""))
+    if(listQA.size() > 0 && !file.equals(""))
     {
       try {
         ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream(file + ".qcb"));
         for(QuizAnswer q : listQA) {
-          System.out.println("Save " + q.getQuestion());
           os.writeObject(q);
         }
         os.close();
       } catch(Exception e) {
-        System.out.println("___________________1");
         e.printStackTrace();
       }
     }
@@ -165,7 +180,7 @@ public class QuizCardBuilder extends JFrame {
           if(t != null)
           listQA.add((QuizAnswer) t);
         }
-      } catch(EOFException e) { System.out.println("Open work!"); }
+      } catch(EOFException e) { }
       catch(Exception e) { e.printStackTrace(); }
   }
 
@@ -195,32 +210,4 @@ public class QuizCardBuilder extends JFrame {
       this.question = question;
     }
   }
-
-
-  public class GameCharacter implements Serializable {
-    int power;
-    String type;
-    String weapons;
-
-    public GameCharacter(int p, String t, String w) {
-      power = p;
-      type = t;
-      weapons = w;
-    }
-
-    public String getType() {
-      return type;
-    }
-
-    public int getPower() {
-      return power;
-    }
-
-    public String getWeapons() {
-        return weapons;
-    }
-  }
-
-
-
 }

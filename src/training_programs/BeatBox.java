@@ -52,7 +52,7 @@ public class BeatBox {
       nameBox.add(new Label(instrumentNames[i]));
     }
 
-    background.add(BorderLayout.EAST, buttonBox);
+    background.add(0, buttonBox);
     background.add(BorderLayout.WEST, nameBox);
 
     theFrame.getContentPane().add(background);
