@@ -13,6 +13,7 @@ public class QuizCardPlayer extends JFrame {
   JTextArea text;
   ArrayList<QuizAnswer> listQA = new ArrayList<QuizAnswer>();
   int thisQA = 0;
+  boolean isAnswer = false;
 
   public static void main(String[] args) {
     new QuizCardPlayer();
@@ -26,19 +27,21 @@ public class QuizCardPlayer extends JFrame {
     panel = new JPanel(layout);
     panel.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
 
-    text = new JTextArea(6, 20);
+    text = new JTextArea(3, 20);
     text.setLineWrap(true);
     JScrollPane scrollText = new JScrollPane(text);
     scrollText.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
     scrollText.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
-    button = new JButton("Next question");
+    button = new JButton("Следующий вопрос");
     button.addActionListener(new NextActionListener());
 
     Box Box1 = new Box(BoxLayout.Y_AXIS);
     Box1.add(scrollText);
-    Box1.add(button);
+    Box Box2 = new Box(BoxLayout.Y_AXIS);
+    Box2.add(button);
     panel.add(BorderLayout.CENTER, Box1);
+    panel.add(BorderLayout.SOUTH, Box2);
 
     JMenuBar menuBar = new JMenuBar();
     JMenu fileMenu = new JMenu("File");
@@ -61,10 +64,20 @@ public class QuizCardPlayer extends JFrame {
   private class NextActionListener implements ActionListener {
     public void actionPerformed(ActionEvent e) {
       if(listQA.size() > 0) {
-        thisQA++;
-        if(thisQA >= listQA.size())
-          thisQA = 0;
-        text.setText(listQA.get(thisQA).getQuestion());
+        if(isAnswer) {
+          thisQA++;
+          if(thisQA >= listQA.size())
+            thisQA = 0;
+          text.setText(listQA.get(thisQA).getQuestion());
+          button.setText("Ответ");
+          isAnswer = false;
+        } else {
+          text.setText(listQA.get(thisQA).getAnswer());
+          isAnswer = true;
+          button.setText("Следующий вопрос");
+        }
+      } else {
+        text.setText("Вопросы не загружены");
       }
     }
   }
