@@ -20,7 +20,7 @@ public class QuizCardPlayer extends JFrame {
   }
 
   QuizCardPlayer() {
-    super("Quiz Card Player");
+    super("Quiz card game");
     this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     this.setBounds(50, 50, 300, 300);
     BorderLayout layout = new BorderLayout();
@@ -33,7 +33,7 @@ public class QuizCardPlayer extends JFrame {
     scrollText.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
     scrollText.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
-    button = new JButton("Следующий вопрос");
+    button = new JButton("Next Answer");
     button.addActionListener(new NextActionListener());
 
     Box Box1 = new Box(BoxLayout.Y_AXIS);
@@ -45,7 +45,7 @@ public class QuizCardPlayer extends JFrame {
 
     JMenuBar menuBar = new JMenuBar();
     JMenu fileMenu = new JMenu("File");
-    JMenuItem openMenuItem = new JMenuItem("Open list");
+    JMenuItem openMenuItem = new JMenuItem("Open card file");
     openMenuItem.addActionListener(new OpenMenuListener());
     JMenuItem exitMenuItem = new JMenuItem("Exit");
     exitMenuItem.addActionListener(new ExitMenuListener());
@@ -69,22 +69,22 @@ public class QuizCardPlayer extends JFrame {
           if(thisQA >= listQA.size())
             thisQA = 0;
           text.setText(listQA.get(thisQA).getQuestion());
-          button.setText("Ответ");
+          button.setText("Answer");
           isAnswer = false;
         } else {
           text.setText(listQA.get(thisQA).getAnswer());
           isAnswer = true;
-          button.setText("Следующий вопрос");
+          button.setText("Next Question");
         }
       } else {
-        text.setText("Вопросы не загружены");
+        text.setText("Card not load");
       }
     }
   }
 
   private class OpenMenuListener implements ActionListener {
     public void actionPerformed(ActionEvent e) {
-      FileNameExtensionFilter filter = new FileNameExtensionFilter("Quiz card file", "qcb");
+      FileNameExtensionFilter filter = new FileNameExtensionFilter("Quiz card file *.qcb", "qcb");
       JFileChooser fileOpen = new JFileChooser();
       fileOpen.setCurrentDirectory(new File("."));
       fileOpen.setFileFilter(filter);
@@ -93,6 +93,7 @@ public class QuizCardPlayer extends JFrame {
         openList(fileOpen.getSelectedFile());
         if(listQA.size() > 0) {
           text.setText(listQA.get(0).getQuestion());
+          button.setText("Answer");
         }
     }
   }

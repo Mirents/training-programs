@@ -13,6 +13,7 @@ public class QuizCardBuilder extends JFrame {
   JTextArea textAnswer;
   JButton buttonNext;
   JButton buttonAdd;
+  JButton buttonDelete;
   ArrayList<QuizAnswer> listQA = new ArrayList<QuizAnswer>();
   int thisQA = 0;
 
@@ -21,7 +22,7 @@ public class QuizCardBuilder extends JFrame {
   }
 
   QuizCardBuilder() {
-    super("Quiz Card Builder");
+    super("Quiz card builder");
     this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     this.setBounds(50, 50, 300, 300);
     BorderLayout layout = new BorderLayout();
@@ -49,6 +50,9 @@ public class QuizCardBuilder extends JFrame {
     buttonAdd = new JButton("Add new card");
     buttonAdd.addActionListener(new AddActionListener());
 
+    buttonDelete = new JButton("Delete card");
+    buttonDelete.addActionListener(new DeleteActionListener());
+
     Box Box1 = new Box(BoxLayout.Y_AXIS);
     Box1.add(labelQuestion);
     Box1.add(scrollQuestion);
@@ -57,6 +61,7 @@ public class QuizCardBuilder extends JFrame {
     Box Box2 = new Box(BoxLayout.X_AXIS);
     Box2.add(buttonNext);
     Box2.add(buttonAdd);
+    Box2.add(buttonDelete);
     panel.add(BorderLayout.CENTER, Box1);
     panel.add(BorderLayout.SOUTH, Box2);
 
@@ -108,6 +113,24 @@ public class QuizCardBuilder extends JFrame {
     }
   }
 
+  private class DeleteActionListener implements ActionListener {
+    public void actionPerformed(ActionEvent e) {
+      if(listQA.size() > 0) {
+        listQA.remove(thisQA);
+        thisQA--;
+        if(thisQA < 0)
+          thisQA = 0;
+        if(listQA.size() > 0) {
+          textQuestion.setText(listQA.get(thisQA).getQuestion());
+          textAnswer.setText(listQA.get(thisQA).getAnswer());
+        } else {
+          textQuestion.setText("");
+          textAnswer.setText("");
+        }
+      }
+    }
+  }
+
   private class NewMenuListener implements ActionListener {
     public void actionPerformed(ActionEvent e) {
       if(listQA.size() > 0)
@@ -121,7 +144,7 @@ public class QuizCardBuilder extends JFrame {
 
   private class OpenMenuListener implements ActionListener {
     public void actionPerformed(ActionEvent e) {
-      FileNameExtensionFilter filter = new FileNameExtensionFilter("Quiz card file", "qcb");
+      FileNameExtensionFilter filter = new FileNameExtensionFilter("Quiz card file *.qcb", "qcb");
       JFileChooser fileOpen = new JFileChooser();
       fileOpen.setCurrentDirectory(new File("."));
       fileOpen.setFileFilter(filter);
