@@ -118,7 +118,7 @@ public class QuizCardBuilder extends JFrame {
   private class SaveMenuListener implements ActionListener {
     public void actionPerformed(ActionEvent e) {
       String s = createSaveFile();
-      saveList(s + ".www");
+      saveList(s);
     }
   }
 
@@ -138,10 +138,10 @@ public class QuizCardBuilder extends JFrame {
   }
 
   private void saveList(String file) {
-    //if(listQA.size() > 0 && !file.getName().equals(""))
+    if(listQA.size() > 0 && !file.getName().equals(""))
     {
       try {
-        ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream(file));
+        ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream(file + ".qcb"));
         for(QuizAnswer q : listQA) {
           System.out.println("Save " + q.getQuestion());
           os.writeObject(q);
