@@ -2,14 +2,13 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.filechooser.*;
-import java.io.*;
 import java.util.*;
+import java.io.*;
 import java.io.FileReader;
+import training_programs.QuizAnswer;
 
 public class QuizCardBuilder extends JFrame {
   JPanel panel;
-  Label labelQuestion;
-  Label labelAnswer;
   JTextArea textQuestion;
   JTextArea textAnswer;
   JButton buttonNext;
@@ -22,7 +21,7 @@ public class QuizCardBuilder extends JFrame {
   }
 
   QuizCardBuilder() {
-    super("QuizCardBuilder");
+    super("Quiz Card Builder");
     this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     this.setBounds(50, 50, 300, 300);
     BorderLayout layout = new BorderLayout();
@@ -41,8 +40,8 @@ public class QuizCardBuilder extends JFrame {
     scrollAnswer.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
     scrollAnswer.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
-    labelQuestion = new Label("Question");
-    labelAnswer = new Label("Answer");
+    Label labelQuestion = new Label("Question");
+    Label labelAnswer = new Label("Answer");
 
     buttonNext = new JButton("Next card");
     buttonNext.addActionListener(new NextActionListener());
@@ -106,7 +105,6 @@ public class QuizCardBuilder extends JFrame {
         textQuestion.setText(listQA.get(thisQA).getQuestion());
         textAnswer.setText(listQA.get(thisQA).getAnswer());
       }
-      System.out.println("thisQA " + thisQA);
     }
   }
 
@@ -170,7 +168,7 @@ public class QuizCardBuilder extends JFrame {
     if(listQA.size() > 0 && !file.equals(""))
     {
       try {
-        ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream(file));
+        ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream(file + ".qcb"));
         for(QuizAnswer q : listQA) {
           os.writeObject(q);
         }
@@ -195,32 +193,5 @@ public class QuizCardBuilder extends JFrame {
         }
       } catch(EOFException e) { }
       catch(Exception e) { e.printStackTrace(); }
-  }
-
-  private class QuizAnswer implements Serializable {
-    private transient static final long serialVersionUID = 11111L;
-    private String question;
-    private String answer;
-
-    QuizAnswer(String question, String answer) {
-      this.question = question;
-      this.answer = answer;
-    }
-
-    public String getQuestion() {
-      return question;
-    }
-
-    public String getAnswer() {
-      return answer;
-    }
-
-    public void setAnswer(String answer) {
-      this.answer = answer;
-    }
-
-    public void setQuestion(String question) {
-      this.question = question;
-    }
   }
 }
