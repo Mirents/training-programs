@@ -69,9 +69,12 @@ public class QuizCardBuilder extends JFrame {
     openMenuItem.addActionListener(new OpenMenuListener());
     JMenuItem saveMenuItem = new JMenuItem("Save list");
     saveMenuItem.addActionListener(new SaveMenuListener());
+    JMenuItem exitMenuItem = new JMenuItem("Exit");
+    exitMenuItem.addActionListener(new ExitMenuListener());
     fileMenu.add(newMenuItem);
     fileMenu.add(openMenuItem);
     fileMenu.add(saveMenuItem);
+    fileMenu.add(exitMenuItem);
     menuBar.add(fileMenu);
     this.setJMenuBar(menuBar);
 
@@ -139,6 +142,12 @@ public class QuizCardBuilder extends JFrame {
       String s = createSaveFile();
       if(!s.equals(""))
         saveList(s);
+    }
+  }
+
+  private class ExitMenuListener implements ActionListener {
+    public void actionPerformed(ActionEvent e) {
+      dispose();
     }
   }
 
