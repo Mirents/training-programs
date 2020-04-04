@@ -3,6 +3,7 @@ import java.util.*;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.sound.midi.*;
+import java.io.*;
 
 public class BeatBox {
   JPanel mainPanel;
@@ -47,12 +48,20 @@ public class BeatBox {
     downTempo.addActionListener(new MyDownTempoListener());
     buttonBox.add(downTempo);
 
+    JButton saveButton = new JButton("Save Tempo");
+    downTempo.addActionListener(new MySaveTempoListener());
+    buttonBox.add(saveButton);
+
+    JButton restoreButton = new JButton("Restore Tempo");
+    downTempo.addActionListener(new MyRestoreTempoListener());
+    buttonBox.add(restoreButton);
+
     Box nameBox = new Box(BoxLayout.Y_AXIS);
     for(int i = 0; i < 16; i++) {
       nameBox.add(new Label(instrumentNames[i]));
     }
 
-    background.add(0, buttonBox);
+    background.add(BorderLayout.EAST, buttonBox);
     background.add(BorderLayout.WEST, nameBox);
 
     theFrame.getContentPane().add(background);
@@ -145,6 +154,34 @@ public class BeatBox {
     }
   }
 
+  public class MySaveTempoListener implements ActionListener {
+    public void actionPerformed(ActionEvent a) {
+      try {
+        ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream(new File("BeatBoxTempo.bbt")));
+        TempoSaver ts = new TempoSaver(checkBoxList);
+        os.writeObject(ts);
+        os.close();
+      } catch(Exception e) {
+        e.printStackTrace();
+      }
+    }
+  }
+
+  public class MyRestoreTempoListener implements ActionListener {
+    public void actionPerformed(ActionEvent a) {
+      try {
+        ObjectInputStream in = new ObjectInputStream(new FileInputStream("BeatBoxTempo.bbt"));
+          TempoSaver t = (TempoSaver) in.readObject();
+          ArrayList<Boolean> lt = t.RestoreTempo();
+          int i = 0;
+          for(JCheckBox c : checkBoxList) {
+            c.setSelected(lt.get(i));
+            i++;
+          }
+      } catch(Exception e) { e.printStackTrace(); }
+    }
+  }
+
   public void makeTracks(int [] list) {
     for(int i = 0; i < 16; i++) {
       int key = list[i];
@@ -164,5 +201,23 @@ public class BeatBox {
       event = new MidiEvent(a, tick);
     } catch(Exception e) { e.printStackTrace(); }
     return event;
+  }
+
+  private class TempoSaver implements Serializable {
+    private transient static final long serialVersionUID = 10000L;
+    private ArrayList<Boolean> ListTempo;
+
+    TempoSaver(ArrayList<JCheckBox> list) {
+      for(JCheckBox cb : list) {
+        if(cb.isSelected())
+          ListTempo.add(true);
+        else
+          ListTempo.add(false);
+      }
+    }
+
+    public ArrayList<Boolean> RestoreTempo() {
+      return ListTempo;
+    }
   }
 }
