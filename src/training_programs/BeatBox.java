@@ -49,11 +49,11 @@ public class BeatBox {
     buttonBox.add(downTempo);
 
     JButton saveButton = new JButton("Save Tempo");
-    downTempo.addActionListener(new MySaveTempoListener());
+    saveButton.addActionListener(new MySaveTempoListener());
     buttonBox.add(saveButton);
 
     JButton restoreButton = new JButton("Restore Tempo");
-    downTempo.addActionListener(new MyRestoreTempoListener());
+    restoreButton.addActionListener(new MyRestoreTempoListener());
     buttonBox.add(restoreButton);
 
     Box nameBox = new Box(BoxLayout.Y_AXIS);
@@ -161,6 +161,7 @@ public class BeatBox {
         TempoSaver ts = new TempoSaver(checkBoxList);
         os.writeObject(ts);
         os.close();
+        System.out.println("save");
       } catch(Exception e) {
         e.printStackTrace();
       }
@@ -204,16 +205,17 @@ public class BeatBox {
   }
 
   private class TempoSaver implements Serializable {
-    private transient static final long serialVersionUID = 10000L;
-    private ArrayList<Boolean> ListTempo;
+    private transient static final long serialVersionUID = 10001L;
+    private ArrayList<Boolean> ListTempo = new ArrayList<Boolean>();
 
     TempoSaver(ArrayList<JCheckBox> list) {
-      for(JCheckBox cb : list) {
+      /*for(JCheckBox cb : list) {
         if(cb.isSelected())
           ListTempo.add(true);
         else
           ListTempo.add(false);
-      }
+      }*/
+      ListTempo.add(false);
     }
 
     public ArrayList<Boolean> RestoreTempo() {
