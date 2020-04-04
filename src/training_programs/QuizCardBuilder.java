@@ -160,8 +160,8 @@ public class QuizCardBuilder extends JFrame {
 
   private class SaveMenuListener implements ActionListener {
     public void actionPerformed(ActionEvent e) {
-      String s = createSaveFile();
-      if(!s.equals(""))
+      File s = createSaveFile();
+      if(!(s == null))
         saveList(s);
     }
   }
@@ -172,7 +172,7 @@ public class QuizCardBuilder extends JFrame {
     }
   }
 
-  private String createSaveFile() {
+  private File createSaveFile() {
     try {
       FileNameExtensionFilter filter = new FileNameExtensionFilter("Quiz card file", "qcb");
       JFileChooser fileSave = new JFileChooser();
@@ -180,18 +180,18 @@ public class QuizCardBuilder extends JFrame {
       fileSave.setFileFilter(filter);
       int ret = fileSave.showSaveDialog(null);
       if(ret == JFileChooser.APPROVE_OPTION)
-        return fileSave.getSelectedFile().getName();
+        return fileSave.getSelectedFile();
   } catch(Exception ex) {
     ex.printStackTrace();
   }
   return null;
   }
 
-  private void saveList(String file) {
+  private void saveList(File file) {
     if(listQA.size() > 0 && !file.equals(""))
     {
       try {
-        ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream(file + ".qcb"));
+        ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream(file));
         for(QuizAnswer q : listQA) {
           os.writeObject(q);
         }
