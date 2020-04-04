@@ -159,12 +159,12 @@ public class BeatBox {
       try {
         ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream(new File("BeatBoxTempo.bbt")));
         TempoSaver ts = new TempoSaver(checkBoxList);
+        ArrayList<Boolean> lt = ts.RestoreTempo();
+        for(Boolean b : lt)
+          System.out.println(b);
         os.writeObject(ts);
         os.close();
-        System.out.println("save");
-      } catch(Exception e) {
-        e.printStackTrace();
-      }
+      } catch(Exception e) { e.printStackTrace(); }
     }
   }
 
@@ -205,17 +205,16 @@ public class BeatBox {
   }
 
   private class TempoSaver implements Serializable {
-    private transient static final long serialVersionUID = 10001L;
+    //private transient static final long serialVersionUID = 10001L;
     private ArrayList<Boolean> ListTempo = new ArrayList<Boolean>();
 
     TempoSaver(ArrayList<JCheckBox> list) {
-      /*for(JCheckBox cb : list) {
+      for(JCheckBox cb : list) {
         if(cb.isSelected())
           ListTempo.add(true);
         else
           ListTempo.add(false);
-      }*/
-      ListTempo.add(false);
+      }
     }
 
     public ArrayList<Boolean> RestoreTempo() {
