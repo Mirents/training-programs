@@ -159,12 +159,7 @@ public class BeatBox {
     public void actionPerformed(ActionEvent a) {
       try {
         ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream(new File("BeatBoxTempo.bbt")));
-        //TempoSaver ts = new TempoSaver(checkBoxList);
-        TempoSaver ts = new TempoSaver(4);
-        ArrayList<Boolean> lt = ts.RestoreTempo();
-
-        for(Boolean b : lt)
-          System.out.println(b);
+        TempoSaver ts = new TempoSaver(checkBoxList);
 
         os.writeObject(ts);
         os.close();
