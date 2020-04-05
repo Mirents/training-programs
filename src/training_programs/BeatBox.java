@@ -4,6 +4,7 @@ import java.awt.event.*;
 import javax.swing.*;
 import javax.sound.midi.*;
 import java.io.*;
+import training_programs.TempoSaver;
 
 public class BeatBox {
   JPanel mainPanel;
@@ -158,10 +159,13 @@ public class BeatBox {
     public void actionPerformed(ActionEvent a) {
       try {
         ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream(new File("BeatBoxTempo.bbt")));
-        TempoSaver ts = new TempoSaver(checkBoxList);
+        //TempoSaver ts = new TempoSaver(checkBoxList);
+        TempoSaver ts = new TempoSaver(4);
         ArrayList<Boolean> lt = ts.RestoreTempo();
+
         for(Boolean b : lt)
           System.out.println(b);
+
         os.writeObject(ts);
         os.close();
       } catch(Exception e) { e.printStackTrace(); }
@@ -202,23 +206,5 @@ public class BeatBox {
       event = new MidiEvent(a, tick);
     } catch(Exception e) { e.printStackTrace(); }
     return event;
-  }
-
-  private class TempoSaver implements Serializable {
-    //private transient static final long serialVersionUID = 10001L;
-    private ArrayList<Boolean> ListTempo = new ArrayList<Boolean>();
-
-    TempoSaver(ArrayList<JCheckBox> list) {
-      for(JCheckBox cb : list) {
-        if(cb.isSelected())
-          ListTempo.add(true);
-        else
-          ListTempo.add(false);
-      }
-    }
-
-    public ArrayList<Boolean> RestoreTempo() {
-      return ListTempo;
-    }
   }
 }
