@@ -54,9 +54,9 @@ public class BeatBox {
     saveButton.addActionListener(new MySaveTempoListener());
     buttonBox.add(saveButton);
 
-    JButton restoreButton = new JButton("Restore Tempo");
-    restoreButton.addActionListener(new MyRestoreTempoListener());
-    buttonBox.add(restoreButton);
+    JButton openButton = new JButton("Open Tempo");
+    openButton.addActionListener(new MyOpenTempoListener());
+    buttonBox.add(openButton);
 
     Box nameBox = new Box(BoxLayout.Y_AXIS);
     for(int i = 0; i < 16; i++) {
@@ -84,8 +84,8 @@ public class BeatBox {
     setUpMidi();
 
     theFrame.setBounds(50, 50, 300, 300);
-    theFrame.pack();
     theFrame.setVisible(true);
+    theFrame.pack();
   }
 
   public void setUpMidi() {
@@ -159,13 +159,14 @@ public class BeatBox {
   public class MySaveTempoListener implements ActionListener {
     public void actionPerformed(ActionEvent a) {
       try {
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("Quiz card file", "qcb");
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Beat Box Tempo file *.bbt", "bbt");
         JFileChooser fileSave = new JFileChooser();
         fileSave.setCurrentDirectory(new File("."));
         fileSave.setFileFilter(filter);
         int ret = fileSave.showSaveDialog(null);
         if(ret == JFileChooser.APPROVE_OPTION) {
-          ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream(fileSave.getSelectedFile()));
+          File file = new File(fileSave.getSelectedFile().getName() + ".bbt");
+          ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream(file));
           TempoSaver ts = new TempoSaver(checkBoxList);
 
           os.writeObject(ts);
@@ -175,7 +176,7 @@ public class BeatBox {
     }
   }
 
-  public class MyRestoreTempoListener implements ActionListener {
+  public class MyOpenTempoListener implements ActionListener {
     public void actionPerformed(ActionEvent a) {
       try {
         FileNameExtensionFilter filter = new FileNameExtensionFilter("Beat Box Tempo file *.bbt", "bbt");
@@ -184,6 +185,7 @@ public class BeatBox {
         fileOpen.setFileFilter(filter);
         int ret = fileOpen.showOpenDialog(null);
         if(ret == JFileChooser.APPROVE_OPTION) {
+
           ObjectInputStream in = new ObjectInputStream(new FileInputStream(fileOpen.getSelectedFile()));
           TempoSaver t = (TempoSaver) in.readObject();
           ArrayList<Boolean> lt = t.RestoreTempo();
