@@ -2,6 +2,7 @@ import java.awt.*;
 import java.util.*;
 import java.awt.event.*;
 import javax.swing.*;
+import javax.swing.filechooser.*;
 import javax.sound.midi.*;
 import java.io.*;
 import training_programs.TempoSaver;
@@ -158,11 +159,18 @@ public class BeatBox {
   public class MySaveTempoListener implements ActionListener {
     public void actionPerformed(ActionEvent a) {
       try {
-        ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream(new File("BeatBoxTempo.bbt")));
-        TempoSaver ts = new TempoSaver(checkBoxList);
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Quiz card file", "qcb");
+        JFileChooser fileSave = new JFileChooser();
+        fileSave.setCurrentDirectory(new File("."));
+        fileSave.setFileFilter(filter);
+        int ret = fileSave.showSaveDialog(null);
+        if(ret == JFileChooser.APPROVE_OPTION) {
+          ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream(fileSave.getSelectedFile()));
+          TempoSaver ts = new TempoSaver(checkBoxList);
 
-        os.writeObject(ts);
-        os.close();
+          os.writeObject(ts);
+          os.close();
+        }
       } catch(Exception e) { e.printStackTrace(); }
     }
   }
@@ -170,7 +178,13 @@ public class BeatBox {
   public class MyRestoreTempoListener implements ActionListener {
     public void actionPerformed(ActionEvent a) {
       try {
-        ObjectInputStream in = new ObjectInputStream(new FileInputStream("BeatBoxTempo.bbt"));
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Beat Box Tempo file *.bbt", "bbt");
+        JFileChooser fileOpen = new JFileChooser();
+        fileOpen.setCurrentDirectory(new File("."));
+        fileOpen.setFileFilter(filter);
+        int ret = fileOpen.showOpenDialog(null);
+        if(ret == JFileChooser.APPROVE_OPTION) {
+          ObjectInputStream in = new ObjectInputStream(new FileInputStream(fileOpen.getSelectedFile()));
           TempoSaver t = (TempoSaver) in.readObject();
           ArrayList<Boolean> lt = t.RestoreTempo();
           int i = 0;
@@ -178,6 +192,8 @@ public class BeatBox {
             c.setSelected(lt.get(i));
             i++;
           }
+          in.close();
+        }
       } catch(Exception e) { e.printStackTrace(); }
     }
   }

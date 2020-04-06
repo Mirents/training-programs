@@ -151,10 +151,10 @@ public class QuizCardBuilder extends JFrame {
       int ret = fileOpen.showOpenDialog(null);
       if(ret == JFileChooser.APPROVE_OPTION)
         openList(fileOpen.getSelectedFile());
-        if(listQA.size() > 0) {
-          textQuestion.setText(listQA.get(0).getQuestion());
-          textAnswer.setText(listQA.get(0).getAnswer());
-        }
+      if(listQA.size() > 0) {
+        textQuestion.setText(listQA.get(0).getQuestion());
+        textAnswer.setText(listQA.get(0).getAnswer());
+      }
     }
   }
 
