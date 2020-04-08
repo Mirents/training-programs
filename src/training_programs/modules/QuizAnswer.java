@@ -1,4 +1,4 @@
-package training_programs;
+package modules;
 
 import java.io.*;
 

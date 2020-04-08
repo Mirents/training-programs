@@ -5,7 +5,7 @@ import javax.swing.filechooser.*;
 import java.io.*;
 import java.util.*;
 import java.io.FileReader;
-import training_programs.QuizAnswer;
+import modules.QuizAnswer;
 
 public class QuizCardPlayer extends JFrame {
   JPanel panel;

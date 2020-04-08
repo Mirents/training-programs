@@ -5,7 +5,7 @@ import javax.swing.*;
 import javax.swing.filechooser.*;
 import javax.sound.midi.*;
 import java.io.*;
-import training_programs.TempoSaver;
+import modules.TempoSaver;
 
 public class BeatBox {
   JPanel mainPanel;
