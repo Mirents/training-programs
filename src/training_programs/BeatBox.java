@@ -165,7 +165,11 @@ public class BeatBox {
         fileSave.setFileFilter(filter);
         int ret = fileSave.showSaveDialog(null);
         if(ret == JFileChooser.APPROVE_OPTION) {
-          File file = new File(fileSave.getSelectedFile().getName() + ".bbt");
+          File file = null;
+          if(fileSave.getSelectedFile().getName().contains(".bbt"))
+            file = new File(fileSave.getSelectedFile().getName());
+          else
+            file = new File(fileSave.getSelectedFile().getName() + ".bbt");
           ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream(file));
           TempoSaver ts = new TempoSaver(checkBoxList);
 
@@ -195,6 +199,7 @@ public class BeatBox {
             i++;
           }
           in.close();
+          sequencer.stop();
         }
       } catch(Exception e) { e.printStackTrace(); }
     }
