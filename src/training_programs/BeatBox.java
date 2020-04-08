@@ -200,6 +200,7 @@ public class BeatBox {
           }
           in.close();
           sequencer.stop();
+          buildTrackAndStart();
         }
       } catch(Exception e) { e.printStackTrace(); }
     }
