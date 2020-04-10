@@ -8,13 +8,17 @@ public class DailyAdviceServer {
 
   public void go() {
     try {
-      ServerSocket sock = new ServerSocket(4242);
+      ServerSocket servSock = new ServerSocket(4242);
 
-      PrintWriter pw = new PrintWriter(sock.getOutputStream());
-      String advice = getAdvice();
-      pw.println(advice);
-      pw.close();
-      System.out.println("Send: " + advice);
+      while(true) {
+        Socket sock = servSock.accept();
+        
+        PrintWriter pw = new PrintWriter(sock.getOutputStream());
+        String advice = getAdvice();
+        pw.println(advice);
+        pw.close();
+        System.out.println("Send: " + advice);
+      }
     } catch(IOException e) { e.printStackTrace(); }
   }
 
