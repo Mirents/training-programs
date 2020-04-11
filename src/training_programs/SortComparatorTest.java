@@ -2,7 +2,14 @@ import java.util.*;
 import java.io.*;
 
 public class SortComparatorTest {
-  ArrayList<Task> listTask= new ArrayList<Task>();
+  // Вариант в котором после каждого добавления элемента нужно будет вручную
+  // вызывать сортировку. Но метод сортировки меняется на ходу, путем смены
+  // Comparator`а
+  ArrayList<Task> listTask = new ArrayList<Task>();
+  // Вариант, при котором можно сразу указать метод сотрировки
+  // Как его поменять в процессе выполнения, я пока не нашел
+  Comparator<Task> treeSort = new PriorityCompare();
+  TreeSet<Task> tree = new TreeSet<Task>(treeSort);
 
   public static void main(String[] args) {
     new SortComparatorTest().go();
@@ -16,6 +23,10 @@ public class SortComparatorTest {
     listTask.add(new Task("Go go go", 3, 2));
     listTask.add(new Task("Stop", 2, 4));
     listTask.add(new Task("Love", 1, 5));
+
+    tree.addAll(listTask);
+    for(Task t : tree)
+      System.out.println(t);
 
     System.out.println("Print before sort:");
     PrintList();
