@@ -31,7 +31,7 @@ public class TwoButtons {
 
       nx = 1;
       ny = 1;
-      xpos = 1;
+      xpos = 50;
       ypos = 50;
       for(int i=0; i < 1000; i ++) {
         if(xpos-1 > 0 && xpos+1 < 300)
