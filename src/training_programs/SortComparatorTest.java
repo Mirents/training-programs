@@ -10,25 +10,24 @@ public class SortComparatorTest {
 
   public void go() {
     listTask.add(new Task("Get out", 1, 2));
-    listTask.add(new Task("Play", 2, 3));
+    listTask.add(new Task("Play", 1, 3));
     listTask.add(new Task("Learn", 1, 4));
     listTask.add(new Task("Go", 2, 1));
     listTask.add(new Task("Go go go", 3, 2));
     listTask.add(new Task("Stop", 2, 4));
-    listTask.add(new Task("Love", 3, 1));
+    listTask.add(new Task("Love", 1, 5));
 
-    System.out.println("Print after sort:");
+    System.out.println("Print before sort:");
     PrintList();
 
-    PriorityCompare pc = new PriorityCompare();
-    Collections.sort(listTask, pc);
-    Collections.sort(listTask, pc);
-    System.out.println("Print before sort priority 2:");
+    Comparator<Task> sort = new PriorityCompare();
+    Collections.sort(listTask, sort);
+    System.out.println("Print after sort priority:");
     PrintList();
 
-    InfluenceCompare ic = new InfluenceCompare();
-    Collections.sort(listTask, ic);
-    System.out.println("Print before sort influence:");
+    sort = new InfluenceCompare();
+    Collections.sort(listTask, sort);
+    System.out.println("Print after sort influence:");
     PrintList();
   }
 
@@ -39,13 +38,21 @@ public class SortComparatorTest {
 
   class PriorityCompare implements Comparator<Task> {
     public int compare(Task one, Task two) {
-      return one.getPriority() - two.getPriority();
+      if(one.getPriority() == two.getPriority()) {
+        return Integer.compare(one.getInfluence(), two.getInfluence());
+      } else {
+        return Integer.compare(one.getPriority(), two.getPriority());
+      }
     }
   }
 
   class InfluenceCompare implements Comparator<Task> {
     public int compare(Task one, Task two) {
-      return one.getInfluence() - two.getInfluence();
+      if(one.getInfluence() == two.getInfluence()) {
+        return Integer.compare(one.getPriority(), two.getPriority());
+      } else {
+        return Integer.compare(one.getInfluence(), two.getInfluence());
+      }
     }
   }
 
