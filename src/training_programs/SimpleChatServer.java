@@ -1,9 +1,41 @@
 import java.io.*;
 import java.net.*;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
 import java.util.*;
+import java.text.*;
 
 public class SimpleChatServer {
   ArrayList<PrintWriter> clientOutputStreams;
+  JTextArea workLog;
+  DateFormat dateFormat;
+
+  public void createWindow() {
+    JFrame frame = new JFrame("Simple chat server");
+    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    JPanel panel = new JPanel(new BorderLayout());
+    panel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+    workLog = new JTextArea(15, 50);
+    workLog.setLineWrap(true);
+    workLog.setWrapStyleWord(true);
+    workLog.setEditable(false);
+    JScrollPane sqroller = new JScrollPane(workLog);
+    sqroller.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+    sqroller.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+    panel.add(BorderLayout.NORTH, new JLabel("History:"));
+    panel.add(BorderLayout.CENTER, sqroller);
+
+    frame.getContentPane().add(BorderLayout.CENTER, panel);
+    frame.setSize(700, 300);
+    frame.setVisible(true);
+    dateFormat = new SimpleDateFormat("yy/MM/dd HH:mm:ss");
+    setTextWorkLog("Create server");
+  }
+
+  public void setTextWorkLog(String text) {
+    workLog.append(dateFormat.format(new Date()) + " " + text + "\n");
+  }
 
   public class ClientHandler implements Runnable {
     BufferedReader reader;
@@ -21,7 +53,7 @@ public class SimpleChatServer {
       String message;
       try {
         while((message = reader.readLine()) != null) {
-          System.out.println("Send message: " + message + " to " + sock.toString());
+          setTextWorkLog("Send message: " + message + " to " + sock.toString());
           tellEveryone(message);
         }
       } catch(Exception e) { e.printStackTrace(); }
@@ -33,10 +65,11 @@ public class SimpleChatServer {
   }
 
   public void go() {
+    createWindow();
     clientOutputStreams = new ArrayList<PrintWriter>();
     try {
       ServerSocket serverSock = new ServerSocket(5000);
-      System.out.println("Start server " + serverSock.toString());
+      setTextWorkLog("Start server " + serverSock.toString());
 
       while(true) {
         Socket clientSocket = serverSock.accept();
@@ -45,7 +78,7 @@ public class SimpleChatServer {
 
         Thread t = new Thread(new ClientHandler(clientSocket));
         t.start();
-        System.out.println("Add client: " + clientSocket.toString());
+        setTextWorkLog("Add client: " + clientSocket.toString());
       }
     } catch(Exception e) { e.printStackTrace(); }
   }
