@@ -6,7 +6,7 @@ import java.awt.event.MouseEvent;
 
 public class MenuGame {
   JFrame frame;
-  GameWindow paint = new GameWindow();
+  GameWindow paint = new GameWindow(400, 300);
   int x = 10;
   int y = 10;
   Rectangle dim = new Rectangle(100, 100, 400, 300);
@@ -26,10 +26,15 @@ public class MenuGame {
   }
 
   class GameWindow extends JPanel implements MouseListener{
-    int widthBox;
-    int heightBox;
+    int widthBox = 300;
+    int heightBox = 400;
     Color col = new Color(50, 40, 20);
     int tolLin = 4;
+
+    public GameWindow(int w, int h) {
+      /*widthBox = w;
+      heightBox = h;*/
+    }
 
     public void paintComponent(Graphics g) {
       paintBattlePole(g);
