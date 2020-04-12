@@ -1,4 +1,4 @@
-import java.arw.*;
+import java.awt.*;
 import javax.swing.*;
 import java.rmi.*;
 import java.awt.event.*;
@@ -18,18 +18,18 @@ public class ServiceBrowser {
 
     frame.getContentPane().add(BorderLayout.NORTH, serviceList);
 
-    serviceList.addActionListener(new MyListListener);
+    serviceList.addActionListener(new MyListListener());
 
     frame.setSize(500, 500);
     frame.setVisible(true);
   }
 
-  public loadService(Object serviceSelection) {
+  public void loadService(Object serviceSelection) {
     try {
       Service svr = server.getService(serviceSelection);
 
       panel.removeAll();
-      panel.add(svc.getGuiPanel());
+      panel.add(svr.getGuiPanel());
       panel.validate();
       panel.repaint();
     } catch(Exception e) { e.printStackTrace(); }
@@ -40,7 +40,7 @@ public class ServiceBrowser {
     Object[] services = null;
 
     try {
-      obj = Naming.Lookup("rmi://127.0.0.1/ServiceServer");
+      obj =  Naming.lookup("rmi://127.0.0.1/ServiceServer");
     } catch(Exception e) { e.printStackTrace(); }
 
     server = (ServiceServer) obj;
@@ -54,7 +54,7 @@ public class ServiceBrowser {
 
   public class MyListListener implements ActionListener {
     public void actionPerformed(ActionEvent e) {
-      Object selection = serviceList.getSelectionItem();
+      Object selection = serviceList.getSelectedItem();
       loadService(selection);
     }
   }
