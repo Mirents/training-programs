@@ -290,7 +290,7 @@ public class MenuGame {
 				this.removeMouseListener(this);
 			}
 			
-			// Ход компьютера
+			// Ход компьютера, если остались еще ходы и не выиграл игрок
 			if(numMove <= 4 && resultMessage == null)
 				moveComp();
 
