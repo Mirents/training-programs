@@ -37,7 +37,7 @@ public class MenuGame {
 		public void run() {
 			try {
 			while(stage != 5) {
-				if(stage == 1) { // Созание окна для глвного меню
+				if(stage == 1) { // Созание окна для главного меню
 					frame.getContentPane().removeAll();
 					StartWindow startWindow = new StartWindow();
 					frame.getContentPane().add(BorderLayout.CENTER, startWindow);
