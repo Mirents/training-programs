@@ -2,14 +2,12 @@ package training_programs;
 
 import javax.swing.*;
 import java.awt.event.*;
-import java.text.AttributedCharacterIterator;
 import java.awt.*;
 
 public class MenuGame {
 	JFrame frame;
-	Rectangle dim = new Rectangle(100, 100, 400, 300);
-	int stage = 1;
-	String resultMessage = "";
+	int stage = 1; // Установка начального значения текущей стадии игры
+	String resultMessage = ""; // Результат игры
 
 	public static void main(String[] args) {
 		new MenuGame().go();
@@ -20,10 +18,11 @@ public class MenuGame {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setResizable(false);
 
+		// Созздание и запуск потока для отслеживания и работы с текущей стадией игры
 		Thread chmg = new Thread(new ChoiserMenuGame());
 		chmg.start();
 
-		frame.setBounds(dim);
+		frame.setBounds(new Rectangle(100, 100, 400, 300));
 		frame.setVisible(true);
 	}
 
@@ -38,7 +37,8 @@ public class MenuGame {
 		public void run() {
 			try {
 			while(stage != 5) {
-				if(stage == 1) {
+				if(stage == 1) { // Созание окна для глвного меню
+					frame.getContentPane().removeAll();
 					StartWindow startWindow = new StartWindow();
 					frame.getContentPane().add(BorderLayout.CENTER, startWindow);
 					startWindow.addMouseListener(startWindow);
@@ -46,7 +46,7 @@ public class MenuGame {
 					frame.validate();
 					frame.repaint();
 					stage = 4;
-				} else if(stage == 2) {
+				} else if(stage == 2) { // Создание окна основного игрового меню
 					GameWindow gameWindow = new GameWindow(frame.getContentPane().getWidth(), frame.getContentPane().getHeight());
 					frame.getContentPane().removeAll();
 					frame.getContentPane().add(BorderLayout.CENTER, gameWindow);
@@ -54,9 +54,8 @@ public class MenuGame {
 					frame.validate();
 					frame.repaint();
 					stage = 4;
-				} else if(stage == 3) {
+				} else if(stage == 3) { // Создание окна с результатами игры
 					frame.getContentPane().removeAll();
-					
 					EndWindow endWindow = new EndWindow();
 					frame.getContentPane().add(BorderLayout.CENTER, endWindow);
 					endWindow.addMouseListener(endWindow);
@@ -73,9 +72,10 @@ public class MenuGame {
 
 	class StartWindow extends JPanel implements MouseListener, MouseMotionListener {
 		private static final long serialVersionUID = 1L;
-		int widthBox;
+		int widthBox;  // Коэффициенты щирины и высоты для создания элементов меню
 		int heightBox;
-		float[] selButton = {1f, 1f};
+		float[] selButton = {1f, 1f}; // Переменная-коэффициент наведения указателя мыши
+		Color foneColor = new Color(30, 150, 220);
 		
 		public void paintComponent(Graphics g) {
 			paintBackground(g);
@@ -83,7 +83,7 @@ public class MenuGame {
 		}
 		
 		public void paintBackground(Graphics g) {
-			g.setColor(new Color(30, 150, 220));
+			g.setColor(foneColor);
 			g.fillRect(0, 0, this.getWidth(), this.getHeight());
 			widthBox = (int) (this.getWidth()/4);
 			heightBox = (int) (this.getHeight()/16);
@@ -111,22 +111,21 @@ public class MenuGame {
 			int x = (int) p.getX();
 			int y = (int) p.getY();
 			
+			// Рассчет нажатой кнопки меню
 			String s = getSelectedButtonMenu(x, y);
 			switch (s) {
-			case "New":
+			case "New": // Переход на стадию игры и удаление всех слушателей мыши
 				stage = 2;
 				this.removeMouseListener(this);
 				this.removeMouseMotionListener(this);
 				break;
-			case "Settings":
-				System.out.println("Setings");
-				break;
-			case "Exit":
+			case "Exit": // Выход и удаление всех слушателей мыши
 				stage = 5;
 				this.removeMouseListener(this);
 				this.removeMouseMotionListener(this);
 				break;
 			}
+			
 			repaint();
 		}
 
@@ -192,9 +191,9 @@ public class MenuGame {
 		int lineThick = 4;
 		Color foneColor = new Color(0, 200, 255);
 		Color lineColor = new Color(30, 110, 240);
-		Color playerXColor = new Color(50, 210, 40);
+		Color playerXColor = new Color(50, 250, 190);
 		Color playerOColor = new Color(200, 120, 50);
-		int[][] battle = new int[3][3];
+		int[][] moveArr = new int[3][3];
 		int numMove = 0;
 
 		public GameWindow(int w, int h) {
@@ -202,7 +201,7 @@ public class MenuGame {
 			heightBox = (int) (h/3);
 			for(int i = 0; i < 3; i++)
 				for(int j = 0; j < 3; j++)
-					battle[i][j] = 0;
+					moveArr[i][j] = 0;
 		}
 
 		public void paintComponent(Graphics g) {
@@ -228,11 +227,11 @@ public class MenuGame {
 		public void paintMoves(Graphics g) {
 			for(int i = 0; i < 3; i++)
 				for(int j = 0; j < 3; j++)
-					if(battle[i][j] == 1) {
+					if(moveArr[i][j] == 1) {
 						int x = (int)(widthBox*(i+1) - widthBox/2);
 						int y = (int)(heightBox*(j+1) - heightBox/2);
 						paintO(g, x, y, 58, 70, foneColor, playerOColor);
-					} else if(battle[i][j] == 2) {
+					} else if(moveArr[i][j] == 2) {
 						int x = (int)(widthBox*(i+1) - widthBox/2);
 						int y = (int)(heightBox*(j+1) - heightBox/2);
 						paintX(g, x, y, 26, 32, foneColor, playerXColor);
@@ -276,8 +275,8 @@ public class MenuGame {
 				ky = 2;
 			
 			//Ход игрока
-			if(battle[kx][ky] == 0) {
-				battle[kx][ky] = 2;
+			if(moveArr[kx][ky] == 0) {
+				moveArr[kx][ky] = 2;
 				numMove++;
 			}
 			
@@ -299,8 +298,8 @@ public class MenuGame {
 			while(endMove) {
 				int kompx = (int)(Math.random()*3);
 				int kompy = (int)(Math.random()*3);
-				if(battle[kompx][kompy] == 0) {
-					battle[kompx][kompy] = 1;
+				if(moveArr[kompx][kompy] == 0) {
+					moveArr[kompx][kompy] = 1;
 					endMove = false;
 				}
 			}
@@ -311,21 +310,20 @@ public class MenuGame {
 			boolean endGame = false;
 			
 			for(int i = 0; i < 3; i++)
-				if(battle[i][0] == 2 && battle[i][1] == 2 && battle[i][2] == 2) {
+				if(moveArr[i][0] == 2 && moveArr[i][1] == 2 && moveArr[i][2] == 2) {
 					winner = "You Won!";
-				} else if(battle[i][0] == 1 && battle[i][1] == 1 && battle[i][2] == 1) {
-					winner = "Won tho Computer!";
-				} else if(battle[0][i] == 2 && battle[1][i] == 2 && battle[2][i] == 2) {
+				} else if(moveArr[i][0] == 1 && moveArr[i][1] == 1 && moveArr[i][2] == 1) {
+					winner = "Won the Computer!";
+				} else if(moveArr[0][i] == 2 && moveArr[1][i] == 2 && moveArr[2][i] == 2) {
 					winner = "You Won!";
-				} else if(battle[0][i] == 1 && battle[1][i] == 1 && battle[2][i] == 1) {
-					winner = "Won tho Computer!";
+				} else if(moveArr[0][i] == 1 && moveArr[1][i] == 1 && moveArr[2][i] == 1) {
+					winner = "Won the Computer!";
 				}
 			
 			for(int i = 0; i < 3; i++)
 				for(int j = 0; j < 3; j++)
-					if(battle[i][j] == 0) {
+					if(moveArr[i][j] == 0)
 						endGame = true;
-					}
 			
 			if(winner != null)
 				return winner;
