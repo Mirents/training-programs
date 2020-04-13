@@ -134,7 +134,8 @@ public class MenuGame {
 			Point p = e.getPoint();
 			int x = (int) p.getX();
 			int y = (int) p.getY();
-						
+			
+			// В зависимотри от наведенную мышью кнопку увеличиваем соответствующие цветовые коэфициенты
 			String s = getSelectedButtonMenu(x, y);
 			switch (s) {
 			case "New":
@@ -187,7 +188,6 @@ public class MenuGame {
 		private static final long serialVersionUID = 1L;
 		int widthBox;
 		int heightBox;
-		Color col = new Color(50, 40, 20);
 		int lineThick = 4;
 		Color foneColor = new Color(0, 200, 255);
 		Color lineColor = new Color(30, 110, 240);
@@ -199,16 +199,15 @@ public class MenuGame {
 		public GameWindow(int w, int h) {
 			widthBox = (int) (w/3);
 			heightBox = (int) (h/3);
-			for(int i = 0; i < 3; i++)
-				for(int j = 0; j < 3; j++)
-					moveArr[i][j] = 0;
 		}
 
+		// Основной метод отрисовки
 		public void paintComponent(Graphics g) {
 			paintBattleground(g);
 			paintMoves(g);
 		}
 
+		// Рисование поля битвы
 		public void paintBattleground(Graphics g) {
 			g.setColor(foneColor);
 			g.fillRect(0, 0, this.getWidth(), this.getHeight());
@@ -224,6 +223,7 @@ public class MenuGame {
 			g.fillRect(0, (heightBox*2-(int)(lineThick/2)), this.getWidth(), lineThick);
 		}
 
+		// В зависимотри от значения рисуем соответствующие ходы игроков
 		public void paintMoves(Graphics g) {
 			for(int i = 0; i < 3; i++)
 				for(int j = 0; j < 3; j++)
@@ -238,6 +238,7 @@ public class MenuGame {
 					}
 		}
 
+		// Рисование элемента игры Х
 		public void paintX(Graphics g, int x, int y, int size1, int size2, Color col1, Color col2) {
 			g.setColor(col2);
 			g.fillRect((x-size2), (y-size2), size2*2, size2*2);
@@ -245,6 +246,7 @@ public class MenuGame {
 			g.fillRect((x-size1), (y-size1), size1*2, size1*2);
 		}
 
+		// Рисование элемента игры О
 		public void paintO(Graphics g, int x, int y, int diam1, int diam2, Color col1, Color col2) {
 			g.setColor(col2);
 			g.fillOval((x-(int)diam2/2), (y-(int)diam2/2), diam2, diam2);
@@ -252,6 +254,8 @@ public class MenuGame {
 			g.fillOval((x-(int)diam1/2), (y-(int)diam1/2), diam1, diam1);
 		}
 
+		// По нажатию мыши рассчитываем текущий квадрат и если там нет хода - ходим в него
+		// После ходит компьютер, если не закончились ходы и затем рассчет победителя
 		@Override
 		public void mousePressed(MouseEvent e) {
 			Point p = e.getPoint();
@@ -293,6 +297,7 @@ public class MenuGame {
 			repaint();
 		}
 
+		// Случайный ход компьютера
 		public void moveComp() {
 			boolean endMove = true;
 			while(endMove) {
@@ -304,7 +309,9 @@ public class MenuGame {
 				}
 			}
 		}
-		
+
+		// Проверка на совпадение трех элементов по горихонтали или вертикали
+		// И проверка на ничью
 		public String getWin() {
 			String winner = null;
 			boolean endGame = false;
@@ -348,6 +355,7 @@ public class MenuGame {
 	class EndWindow extends JPanel implements MouseListener {
 		private static final long serialVersionUID = 1L;
 
+		// Вывод сообщения о результатах игры
 		public void paintComponent(Graphics g) {
 			g.setColor(new Color(200, 150, 180));
 			g.fillRect(0, 0, this.getWidth(), this.getHeight());
@@ -355,7 +363,8 @@ public class MenuGame {
 			g.setColor(new Color(0, 0, 0));
 			g.drawString("End Game - " + resultMessage, (int)(this.getWidth()/2)-40, (int)(this.getHeight()/2));
 		}
-			
+		
+		// По нажатию мыши возврат в главное меню с удалением текущего слушателя
 		@Override
 		public void mousePressed(MouseEvent arg0) {
 			stage = 1;
