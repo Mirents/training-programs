@@ -284,15 +284,15 @@ public class MenuGame {
 				numMove++;
 			}
 			
-			// Ход компьютера
-			if(numMove <= 4)
-				moveComp();
-			
 			resultMessage = getWin();
 			if(resultMessage != null) {
 				stage = 3;
 				this.removeMouseListener(this);
 			}
+			
+			// Ход компьютера
+			if(numMove <= 4 && resultMessage == null)
+				moveComp();
 
 			repaint();
 		}
