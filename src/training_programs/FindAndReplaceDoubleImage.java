@@ -4,10 +4,13 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.event.*;
 import javax.swing.filechooser.*;
-import java.util.*;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class FindAndReplaceDoubleImage {
   JFrame frame;
+  List<String> listFile = new ArrayList<String>();
 
   public static void main(String [] args) {
     new FindAndReplaceDoubleImage().go();
@@ -38,7 +41,7 @@ public class FindAndReplaceDoubleImage {
         fileOpen.setCurrentDirectory(new File("."));
         int ret = fileOpen.showOpenDialog(null);
         if(ret == JFileChooser.APPROVE_OPTION) {
-          getListFile(fileOpen.getCurrentDirectory());
+          getListFile(fileOpen.getSelectedFile());
         }
       } catch(Exception e) { e.printStackTrace(); }
     }
@@ -46,13 +49,32 @@ public class FindAndReplaceDoubleImage {
 
   public void getListFile(File dir) {
     // Список объектов File
-    File[] arrFiles = dir.listFiles();
+    /*File[] arrFiles = dir.listFiles();
     for(File f : arrFiles)
-      System.out.println("- " + f.getName());
+      System.out.println("- " + f.getName());*/
 
     // Список названий файлов
-    String [] s = dir.list();
+    /*String [] s = dir.list();
     for(String d : dir.list())
-      System.out.println(d.toString());
+      System.out.println(d.toString());*/
+
+    listFile = Arrays.asList(dir.list());
+    for(String g : listFile)
+      System.out.println("/// " + g.toString());
+
+    workToLostFile();
+  }
+
+  public void workToLostFile() {
+    for(int i = 0; i < listFile.size(); i++)
+      for(int j = 0; j < listFile.size(); j++) {
+        if(i != j) {
+          String s1 = listFile.get(i);
+          String s2 = listFile.get(j);
+          System.out.println(s1 + "  /  " + s2);
+          if(s1.contains(s2) || s2.contains(s1))
+            System.out.println(listFile.get(i) + "  ///  " + listFile.get(j));
+          }
+      }
   }
 }
