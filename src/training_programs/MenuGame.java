@@ -62,8 +62,8 @@ public class MenuGame {
 					frame.validate();
 					frame.repaint();
 					stage = 4;
-				} else
-					Thread.sleep(50);
+				} /*else
+					Thread.sleep(50);*/
 			}
 			frame.dispose();
 			} catch(Exception e) { e.printStackTrace(); }
