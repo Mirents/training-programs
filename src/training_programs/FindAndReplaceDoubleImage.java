@@ -1,5 +1,6 @@
 import java.io.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.event.*;
@@ -10,7 +11,7 @@ import java.util.Arrays;
 
 public class FindAndReplaceDoubleImage {
   JFrame frame;
-  List<String> listFile = new ArrayList<String>();
+  List<File> listFile = new ArrayList<File>();
 
   public static void main(String [] args) {
     new FindAndReplaceDoubleImage().go();
@@ -51,16 +52,14 @@ public class FindAndReplaceDoubleImage {
     // Список объектов File
     /*File[] arrFiles = dir.listFiles();
     for(File f : arrFiles)
-      System.out.println("- " + f.getName());*/
+      System.out.println("- " + f.getAbsolutePath());*/
 
     // Список названий файлов
     /*String [] s = dir.list();
     for(String d : dir.list())
       System.out.println(d.toString());*/
 
-    listFile = Arrays.asList(dir.list());
-    for(String g : listFile)
-      System.out.println("/// " + g.toString());
+    listFile = Arrays.asList(dir.listFiles());
 
     workToLostFile();
   }
@@ -68,13 +67,36 @@ public class FindAndReplaceDoubleImage {
   public void workToLostFile() {
     for(int i = 0; i < listFile.size(); i++)
       for(int j = 0; j < listFile.size(); j++) {
-        if(i != j) {
-          String s1 = listFile.get(i);
-          String s2 = listFile.get(j);
-          System.out.println(s1 + "  /  " + s2);
-          if(s1.contains(s2) || s2.contains(s1))
-            System.out.println(listFile.get(i) + "  ///  " + listFile.get(j));
+        if(i != j && !listFile.get(i).getName().contains("_")) {
+          String s1 = listFile.get(i).getName().substring(0, listFile.get(i).getName().length()-4);
+          String s2 = listFile.get(j).getName().substring(0, listFile.get(j).getName().length()-4);
+
+          if(s1.contains(s2) || s2.contains(s1)) {
+            openAndDeleteFile(listFile.get(i), listFile.get(j));
+          }
           }
       }
+  }
+
+  public void openAndDeleteFile(File s1, File s2) {
+    BufferedImage img1 = null;
+    BufferedImage img2 = null;
+    File f1 = null;
+    File f2 = null;
+
+    try {
+      img1 = ImageIO.read(s1);
+      img2 = ImageIO.read(s2);
+    } catch(IOException e) { e.printStackTrace(); }
+
+    int wImg1 = img1.getWidth();
+    int hImg1 = img1.getHeight();
+
+    int wImg2 = img2.getWidth();
+    int hImg2 = img2.getHeight();
+    int p1 = img1.getRGB(100, 100);
+    int p2 = img2.getRGB(100, 100);
+    if(p1 == p2)
+      System.out.println("Delete file " + s2.getName());
   }
 }
