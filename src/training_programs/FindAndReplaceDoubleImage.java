@@ -95,33 +95,54 @@ public class FindAndReplaceDoubleImage {
     BufferedImage img2 = null;
     File f1 = null;
     File f2 = null;
+    int [][] rgbOne = new int[100][100];
+    int [][] rgbTwo = new int[100][100];
+    int k1, k2;
+    boolean isRemove = false;
 
     try {
       img1 = ImageIO.read(s1);
       img2 = ImageIO.read(s2);
 
-    int wImg1 = img1.getWidth();
-    int hImg1 = img1.getHeight();
+      int wImg1 = img1.getWidth();
+      int hImg1 = img1.getHeight();
 
-    int wImg2 = img2.getWidth();
-    int hImg2 = img2.getHeight();
-    int p1 = img1.getRGB(100, 100);
-    int p2 = img2.getRGB(100, 100);
-    if(p1 == p2) {
-        //System.out.println(source + "/" + s2.getName());
-        if(s2.renameTo((new File(source + "/" + s2.getName())))) {
-          System.out.println(source + s2.getName());
+      int wImg2 = img2.getWidth();
+      int hImg2 = img2.getHeight();
+
+      if(wImg1 != wImg2 || hImg1 != hImg2)
+        return false;
+
+      k1 = (int) (wImg1-1)/100; // TODO устранить уязвимость в размере картинки, если она меньше 100 на 100
+      k2 = (int) (hImg1-1)/100;
+
+      for(int i = 0; i < 100; i++)
+        for(int j = 0; j < 100; j++) {
+          int p1 = img1.getRGB(i*k1, j*k2);
+          int p2 = img2.getRGB(i*k1, j*k2);
+          System.out.println("get pixel " + i*k1 + " " + j*k2);
+          if(p1 != p2)
+            isRemove = true;
+        }
+
+      if(!isRemove) {
+        if(removeFile(s2, source))
           return true;
-        }
-        else {
-          System.out.println(s2.getPath() + source + s2.getName());
+        else
           return false;
-        }
-    } else {
-      System.out.println("33");
-      return false;
-    }
+        } else
+          return false;
     } catch(IOException e) { e.printStackTrace(); }
+    finally { return false; }
+  }
+
+  public boolean removeFile(File f, String source) {
+    try {
+      if(f.renameTo((new File(source + "/" + f.getName()))))
+        return true;
+      else
+        return false;
+    } catch(Exception e) { e.printStackTrace(); }
     finally { return false; }
   }
 }
