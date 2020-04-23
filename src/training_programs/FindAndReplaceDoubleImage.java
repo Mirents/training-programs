@@ -65,15 +65,14 @@ public class FindAndReplaceDoubleImage {
   }
 
   public void workToLostFile() {
-    for(int i = 0; i < listFile.size(); i++)
+    for(int i = 0; i < listFile.size(); i++) // TODO Сделать цикл while с начала несколько раз
       for(int j = 0; j < listFile.size(); j++) {
-        if(i != j && !listFile.get(i).getName().contains("_")) {
+        if(i != j && !listFile.get(i).getName().contains("_")) { // TODO добвить сравнение атрибутов и размеров файлов
           String s1 = listFile.get(i).getName().substring(0, listFile.get(i).getName().length()-4);
           String s2 = listFile.get(j).getName().substring(0, listFile.get(j).getName().length()-4);
 
-          if(s1.contains(s2) || s2.contains(s1)) {
+          if(s1.contains(s2) || s2.contains(s1))
             openAndDeleteFile(listFile.get(i), listFile.get(j));
-          }
           }
       }
   }
