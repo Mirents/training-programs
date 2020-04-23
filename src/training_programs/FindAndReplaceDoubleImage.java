@@ -8,11 +8,15 @@ import javax.swing.filechooser.*;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.*;
 
 public class FindAndReplaceDoubleImage {
   JFrame frame;
   List<File> listFile = new ArrayList<File>();
   String doubleFile = "/doubleFile";
+  JTextField sourceDirName;
+  JList<String> doubleFileName;
+  Vector<String> listDoubleFileName = new Vector<String>();
 
   public static void main(String [] args) {
     new FindAndReplaceDoubleImage().go();
@@ -28,9 +32,19 @@ public class FindAndReplaceDoubleImage {
 
     JButton buttonOpenCatalog = new JButton("Open Catalog");
     buttonOpenCatalog.addActionListener(new MyOpenCatalogListener());
-
     background.add(BorderLayout.NORTH, buttonOpenCatalog);
+
+    sourceDirName = new JTextField();
+    background.add(BorderLayout.CENTER, sourceDirName);
+
+    doubleFileName = new JList<String>();
+    doubleFileName.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    JScrollPane theList = new JScrollPane(doubleFileName);
+    doubleFileName.setListData(listDoubleFileName);
+    background.add(BorderLayout.CENTER, theList);
+
     frame.getContentPane().add(background);
+    frame.pack();
 		frame.setVisible(true);
 	}
 
@@ -120,7 +134,6 @@ public class FindAndReplaceDoubleImage {
         for(int j = 0; j < 100; j++) {
           int p1 = img1.getRGB(i*k1, j*k2);
           int p2 = img2.getRGB(i*k1, j*k2);
-          System.out.println("get pixel " + i*k1 + " " + j*k2);
           if(p1 != p2)
             isRemove = true;
         }
@@ -138,8 +151,11 @@ public class FindAndReplaceDoubleImage {
 
   public boolean removeFile(File f, String source) {
     try {
-      if(f.renameTo((new File(source + "/" + f.getName()))))
+      if(f.renameTo((new File(source + "/" + f.getName())))) {
+        listDoubleFileName.add(f.getName());
+        doubleFileName.setListData(listDoubleFileName);
         return true;
+      }
       else
         return false;
     } catch(Exception e) { e.printStackTrace(); }
