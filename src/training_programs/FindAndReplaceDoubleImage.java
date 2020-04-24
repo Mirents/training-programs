@@ -1,3 +1,5 @@
+package training_programs;
+
 import java.io.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -103,7 +105,7 @@ public class FindAndReplaceDoubleImage {
   }
 
   public void workToListFile(String source) {
-    int i = 0;
+    /*int i = 0;
     int j = 0;
     boolean endList = false;
 
@@ -112,33 +114,75 @@ public class FindAndReplaceDoubleImage {
       endList = false;
       j = 0;
       while(!endList) {
-        if(i != j && !listFile.get(i).getName().contains("_")) { // TODO добвить сравнение атрибутов и размеров файлов
+    	  System.out.println("i= " + i + " j= " + j + " Сравниваю файлы: " + listFile.get(i).getName() +
+        		  " " + listFile.get(j).getName());
+    	  
+    	  if(j == listFile.size()-1) {
+              endList = true;
+              System.out.println("Конец j, обнуляю его,  размер массива " + listFile.size());
+          } else if(i != j && listFile.get(i).getName().length() <= listFile.get(j).getName().length()) { // TODO добвить сравнение атрибутов и размеров файлов
           String s1 = listFile.get(i).getName().substring(0, listFile.get(i).getName().length()-4);
           String s2 = listFile.get(j).getName().substring(0, listFile.get(j).getName().length()-4);
-
-          if(s1.contains(s2) || s2.contains(s1))
-            if(openAndDeleteFile(listFile.get(i), listFile.get(j), source)) {
-              System.out.println("+ " + i);
+          
+          if(s1.contains(s2) || s2.contains(s1)) {
+            boolean b = openAndDeleteFile(listFile.get(i), listFile.get(j), source);
+            System.out.println("i= " + i + " j= " + j + " Файлы: " + listFile.get(i).getName() + " " + listFile.get(j).getName() +
+            		" содержат друг друга, результат перемещения " + b);
+            if(b) {
+              System.out.println("Обнуляю i и j");
               i = 0;
+              endList = true;
             }
             else {
               // TODO После усранения проблемы с просмотром удаленного элемента, разрешить этот вывод
               listDoubleFileName.add("Содержимое различается:");
               listDoubleFileName.add(" - " + s1 + " - " + s2);
               doubleFileName.setListData(listDoubleFileName);
-              System.out.println("- " + i);
+              System.out.println("Переместить файл не получилось");
             }
           }
-        System.out.println(i + " " + j);
-        if(++j == listFile.size()-1)
-            endList = true;
+          }
+        j++;
       }
-      if(i++ == listFile.size()-1)
-        break;
-      }
-  }
+	      if(i == listFile.size()-1) {
+	    	  System.out.println("Конец i, конец работы");
+	    	  break;
+	      } else i++;
+      }*/
+	
+	int i = 0;
+	int j = 0;
+	boolean endList = false;
+	
+	while(true) {
+		endList = false;
+		j = 0;
+		while(!endList) {
+			String s1 = listFile.get(i).getName().substring(0, listFile.get(i).getName().length()-4);
+			String s2 = listFile.get(j).getName().substring(0, listFile.get(j).getName().length()-4);
 
-  public boolean openAndDeleteFile(File s1, File s2, String source) {
+			System.out.println("i= " + i + " j= " + j + " Сравниваю файлы: " + s1 + " " + s2);
+			
+			if(j == listFile.size()-1) {
+				endList = true;
+			}
+			
+			if(i != j && isDeleteFile(listFile.get(i), listFile.get(j))) {
+				removeFile(listFile.get(j), source);
+				i = 0;
+				endList = true;
+			} else
+				j++;
+		}
+		
+		if(i == listFile.size()-1)
+			break;
+		else
+			i++;
+	}
+}
+
+  public boolean isDeleteFile(File s1, File s2) {
     BufferedImage img1 = null;
     BufferedImage img2 = null;
     File f1 = null;
@@ -171,20 +215,16 @@ public class FindAndReplaceDoubleImage {
           if(p1 != p2)
             isRemove = true;
         }
+      } catch(IOException e) { e.printStackTrace(); }
 
-      if(!isRemove) {
-        if(removeFile(s2, source))
+      if(!isRemove)
           return true;
         else
           return false;
-        } else
-          return false;
-    } catch(IOException e) { e.printStackTrace(); }
-    finally { return false; }
   }
 
   public boolean removeFile(File f, String source) {
-    try {
+    //try {
       if(f.renameTo((new File(source + "/" + f.getName())))) {
         listFile.remove(f); // TODO Подумать как убрать повторную обработку перемещенных файлов
         listDoubleFileName.add(f.getName());
@@ -195,7 +235,6 @@ public class FindAndReplaceDoubleImage {
       }
       else
         return false;
-    } catch(Exception e) { e.printStackTrace(); }
-    finally { return false; }
+    //} catch(Exception e) { e.printStackTrace(); }
   }
 }
