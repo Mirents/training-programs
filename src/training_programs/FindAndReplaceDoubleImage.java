@@ -80,20 +80,9 @@ public class FindAndReplaceDoubleImage {
   }
 
   public void getListFile(File dir, String source) {
-    // Список объектов File
-    /*File[] arrFiles = dir.listFiles();
-    for(File f : arrFiles)
-      System.out.println("- " + f.getAbsolutePath());*/
-
-    // Список названий файлов
-    /*String [] s = dir.list();
-    for(String d : dir.list())
-      System.out.println(d.toString());*/
 
     listFile = new ArrayList<>(Arrays.asList(dir.listFiles()));
-    System.out.println("1   " + listFile.toString());
     listFile.removeIf(f -> (f.isDirectory()));
-    System.out.println("2   " + listFile.toString());
 
     File dirToDelete = new File(dir.getAbsolutePath() + source);
 
