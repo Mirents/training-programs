@@ -105,25 +105,33 @@ public class FindAndReplaceDoubleImage {
   public void workToListFile(String source) {
     int i = 0;
     int j = 0;
+    boolean endList = false;
 
     while(true) {
-      for(int j = 0; j < listFile.size(); j++) {
-      //while(true) {
+      //for(int j = 0; j < listFile.size(); j++) {
+      endList = false;
+      j = 0;
+      while(!endList) {
         if(i != j && !listFile.get(i).getName().contains("_")) { // TODO добвить сравнение атрибутов и размеров файлов
           String s1 = listFile.get(i).getName().substring(0, listFile.get(i).getName().length()-4);
           String s2 = listFile.get(j).getName().substring(0, listFile.get(j).getName().length()-4);
 
           if(s1.contains(s2) || s2.contains(s1))
-            if(openAndDeleteFile(listFile.get(i), listFile.get(j), source))
+            if(openAndDeleteFile(listFile.get(i), listFile.get(j), source)) {
+              System.out.println("+ " + i);
               i = 0;
+            }
             else {
+              // TODO После усранения проблемы с просмотром удаленного элемента, разрешить этот вывод
               listDoubleFileName.add("Содержимое различается:");
               listDoubleFileName.add(" - " + s1 + " - " + s2);
               doubleFileName.setListData(listDoubleFileName);
+              System.out.println("- " + i);
             }
           }
-        /*  if(j++ == listFile.size()-1)
-            continue;*/
+        System.out.println(i + " " + j);
+        if(++j == listFile.size()-1)
+            endList = true;
       }
       if(i++ == listFile.size()-1)
         break;
@@ -178,10 +186,11 @@ public class FindAndReplaceDoubleImage {
   public boolean removeFile(File f, String source) {
     try {
       if(f.renameTo((new File(source + "/" + f.getName())))) {
-        listFile.remove(f);
+        listFile.remove(f); // TODO Подумать как убрать повторную обработку перемещенных файлов
         listDoubleFileName.add(f.getName());
         doubleFileName.setListData(listDoubleFileName);
         removeFiles++;
+        System.out.println("remove " + f.getName());
         return true;
       }
       else
