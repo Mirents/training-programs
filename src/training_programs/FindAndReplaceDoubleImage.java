@@ -9,14 +9,17 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.*;
+import javax.swing.border.EmptyBorder;
+import javax.swing.JOptionPane;
 
 public class FindAndReplaceDoubleImage {
   JFrame frame;
-  List<File> listFile = new ArrayList<File>();
+  List<File> listFile;
   String doubleFile = "/doubleFile";
   JTextField sourceDirName;
   JList<String> doubleFileName;
   Vector<String> listDoubleFileName = new Vector<String>();
+  JLabel labelSource;
 
   public static void main(String [] args) {
     new FindAndReplaceDoubleImage().go();
@@ -27,23 +30,32 @@ public class FindAndReplaceDoubleImage {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setResizable(false);
 		frame.setBounds(new Rectangle(100, 100, 400, 300));
-    JPanel background = new JPanel(new BorderLayout());
-    background.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+    JPanel background = new JPanel(new GridLayout(3, 2));
+    //background.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+    Box Box = new Box(BoxLayout.Y_AXIS);
+    Box.setBorder(new EmptyBorder(5, 5, 5, 5));
+    Box Box1 = new Box(BoxLayout.X_AXIS);
 
     JButton buttonOpenCatalog = new JButton("Open Catalog");
     buttonOpenCatalog.addActionListener(new MyOpenCatalogListener());
-    background.add(BorderLayout.NORTH, buttonOpenCatalog);
+    Box.add(buttonOpenCatalog);
+    Box.add(Box.createVerticalStrut(5));
 
+    labelSource = new JLabel("Source dir: ");
     sourceDirName = new JTextField();
-    background.add(BorderLayout.CENTER, sourceDirName);
+    Box1.add(labelSource);
+    Box1.add(sourceDirName);
+    Box.add(Box1);
+    Box.add(Box.createVerticalStrut(5));
 
     doubleFileName = new JList<String>();
     doubleFileName.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     JScrollPane theList = new JScrollPane(doubleFileName);
     doubleFileName.setListData(listDoubleFileName);
-    background.add(BorderLayout.CENTER, theList);
+    Box.add(theList);
 
-    frame.getContentPane().add(background);
+    frame.getContentPane().add(Box);
     frame.pack();
 		frame.setVisible(true);
 	}
@@ -54,16 +66,20 @@ public class FindAndReplaceDoubleImage {
         JFileChooser fileOpen = new JFileChooser();
         fileOpen.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         fileOpen.setAcceptAllFileFilterUsed(false);
-        fileOpen.setCurrentDirectory(new File("."));
+        fileOpen.setCurrentDirectory(new File(".")); // TODO Решить вопрос с точкой для задания текущего каталога
         int ret = fileOpen.showOpenDialog(null);
         if(ret == JFileChooser.APPROVE_OPTION) {
-          getListFile(fileOpen.getSelectedFile());
+          String source = sourceDirName.getText();
+          if(!source.equals(""))
+            getListFile(fileOpen.getSelectedFile(), ("/" + source));
+          else
+            JOptionPane.showMessageDialog(null, "Error! Folder name is empty!");
         }
       } catch(Exception e) { e.printStackTrace(); }
     }
   }
 
-  public void getListFile(File dir) {
+  public void getListFile(File dir, String source) {
     // Список объектов File
     /*File[] arrFiles = dir.listFiles();
     for(File f : arrFiles)
@@ -74,18 +90,22 @@ public class FindAndReplaceDoubleImage {
     for(String d : dir.list())
       System.out.println(d.toString());*/
 
-    listFile = Arrays.asList(dir.listFiles());
+    listFile = new ArrayList<>(Arrays.asList(dir.listFiles()));
+    System.out.println("1   " + listFile.toString());
+    listFile.removeIf(f -> (f.isDirectory()));
+    System.out.println("2   " + listFile.toString());
 
-    System.out.println(dir.getAbsolutePath());
-    File dirToDelete = new File(dir.getAbsolutePath() + doubleFile);
+    File dirToDelete = new File(dir.getAbsolutePath() + source);
 
-    if(dirToDelete.mkdir()) // TODO добавить проверку на присутствие каталога
-      workToLostFile(dir.getAbsolutePath() + doubleFile);
+    if(dirToDelete.exists())
+      JOptionPane.showMessageDialog(null, "Error, folder is name \"" + source + "\" is exists, set new name folder");
+    else if(dirToDelete.mkdir())
+      workToListFile(dir.getAbsolutePath() + source);
     else
-      System.out.println("Don`t create source directori!");
+      JOptionPane.showMessageDialog(null, "Error create folder name " + source);
   }
 
-  public void workToLostFile(String source) {
+  public void workToListFile(String source) {
     int i = 0;
 
     while(true) {
