@@ -20,6 +20,7 @@ public class FindAndReplaceDoubleImage {
   JList<String> doubleFileName;
   Vector<String> listDoubleFileName = new Vector<String>();
   JLabel labelSource;
+  int removeFiles;
 
   public static void main(String [] args) {
     new FindAndReplaceDoubleImage().go();
@@ -83,22 +84,31 @@ public class FindAndReplaceDoubleImage {
 
     listFile = new ArrayList<>(Arrays.asList(dir.listFiles()));
     listFile.removeIf(f -> (f.isDirectory()));
+    if(listFile.size() == 0) {
+      JOptionPane.showMessageDialog(null, "Folder is Empty");
+      return;
+    }
 
     File dirToDelete = new File(dir.getAbsolutePath() + source);
 
     if(dirToDelete.exists())
       JOptionPane.showMessageDialog(null, "Error, folder is name \"" + source + "\" is exists, set new name folder");
-    else if(dirToDelete.mkdir())
+    else if(dirToDelete.mkdir()) {
       workToListFile(dir.getAbsolutePath() + source);
+      listDoubleFileName.add("Перемещено дублей: " + removeFiles);
+      doubleFileName.setListData(listDoubleFileName);
+    }
     else
       JOptionPane.showMessageDialog(null, "Error create folder name " + source);
   }
 
   public void workToListFile(String source) {
     int i = 0;
+    int j = 0;
 
     while(true) {
       for(int j = 0; j < listFile.size(); j++) {
+      //while(true) {
         if(i != j && !listFile.get(i).getName().contains("_")) { // TODO добвить сравнение атрибутов и размеров файлов
           String s1 = listFile.get(i).getName().substring(0, listFile.get(i).getName().length()-4);
           String s2 = listFile.get(j).getName().substring(0, listFile.get(j).getName().length()-4);
@@ -106,7 +116,14 @@ public class FindAndReplaceDoubleImage {
           if(s1.contains(s2) || s2.contains(s1))
             if(openAndDeleteFile(listFile.get(i), listFile.get(j), source))
               i = 0;
+            else {
+              listDoubleFileName.add("Содержимое различается:");
+              listDoubleFileName.add(" - " + s1 + " - " + s2);
+              doubleFileName.setListData(listDoubleFileName);
+            }
           }
+        /*  if(j++ == listFile.size()-1)
+            continue;*/
       }
       if(i++ == listFile.size()-1)
         break;
@@ -161,8 +178,10 @@ public class FindAndReplaceDoubleImage {
   public boolean removeFile(File f, String source) {
     try {
       if(f.renameTo((new File(source + "/" + f.getName())))) {
+        listFile.remove(f);
         listDoubleFileName.add(f.getName());
         doubleFileName.setListData(listDoubleFileName);
+        removeFiles++;
         return true;
       }
       else
