@@ -64,18 +64,15 @@ public class FindAndReplaceDoubleImage {
 		BoxPane.add(javax.swing.Box.createVerticalStrut(5));
 
 		sourceDirNameBadFile = new JTextField("bad_image");
-		sourceDirNameBadFile.setEnabled(true);
 		CheckRemoveBad = new JCheckBox("Move corrupted files to:");
-		/*CheckRemoveBad.addItemListener(new ItemListener() {
+		CheckRemoveBad.setSelected(true);
+		CheckRemoveBad.addItemListener(new ItemListener() {
 			@Override
 			public void itemStateChanged(ItemEvent arg0) {
-				if(removeBadFile & !isWork)
-					removeBadFile = false;
-				else
-					removeBadFile = true;
-				sourceDirNameBadFile.setEnabled(removeBadFile);
+				if(!isWork)
+					sourceDirNameBadFile.setEnabled(CheckRemoveBad.isSelected());
 			}
-		});*/
+		});
 		Box2.add(CheckRemoveBad);
 		Box2.add(sourceDirNameBadFile);
 		BoxPane.add(Box2);
@@ -116,20 +113,27 @@ public class FindAndReplaceDoubleImage {
 
 		@Override
 		public void run() {
-			if(getListFile(fileOpen.getSelectedFile()))
+			if(getListFile(fileOpen.getSelectedFile())) {
+				deleteNoImage(); // TODO Сделать Написать метод удаления не картинок
 				if(createDirectory(fileOpen.getSelectedFile()))
-					System.out.println("Ok!");
+					System.out.println(listFile.toString());
+			}
 			isWork = false;
 		}
 
+		public void deleteNoImage() {
+			/*for(File f : listFile)
+				System.out.println(f.getName().substring(f.getName().length()-3, f.getName().length()));*/
+			//listFile.removeIf(f -> (f.getName().substring(f.getName().length()-3, f.getName().length()) == "jpg"));
+		}
+		
 		public boolean getListFile(File dir) {
 			listFile = new ArrayList<>(Arrays.asList(dir.listFiles()));
 			listFile.removeIf(f -> (f.isDirectory()));
 			if(listFile.size() == 0) {
 				JOptionPane.showMessageDialog(null, "Folder is Empty");
 				return false;
-			} else {
-				System.out.println(listFile.toString());
+			} else { // TOTO Тестирование Проверить на пустоту папки
 				return true;
 			}
 		}
@@ -141,56 +145,44 @@ public class FindAndReplaceDoubleImage {
 				if(CheckRemoveBad.isSelected()) {
 					dirToBad = new File(dir.getAbsolutePath() + "/" + sourceDirNameBadFile.getText());
 					if(createOrExistsDir(dirToBad)) {
-						// Каталог для битых файлов успешно создан, можно перемещать их
-					}
-				}
-			}
-			/*dirToDouble = new File(dir.getAbsolutePath() + "/" + sourceDirNameDouble.getText());
-			
-			if(dirToDouble.exists()) {
-				JOptionPane.showMessageDialog(null, "Error, folder is name \"" + sourceDirNameDouble.getText() + "\" is exists, set new name folder");
-				return false;
-			}
-			else if(dirToDouble.mkdir()) {
-				if(!CheckRemoveBad.isSelected())
-					removeBad(CheckRemoveBad.isSelected(), dir.getAbsolutePath() + sourceDirNameBadFile.getText());
-				} else {
-					dirToBad = new File(dir.getAbsolutePath() + "/" + sourceDirNameBadFile.getText());
-					if(dirToBad.exists()) {
-						JOptionPane.showMessageDialog(null, "Error, folder is name \"" + sourceDirNameDouble.getText() + "\" is exists, set new name folder");
+						// TODO Исправить Каталог для битых файлов успешно создан, можно перемещать их
+						removeBad();
+						return true;
+					} else
 						return false;
-					}
-					else if(dirToBad.mkdir()) {
-					}
-				}*/
-					
-				
-				/*workToListFile(dir.getAbsolutePath() + sourceDouble);
-				listDoubleFileName.add("Перемещено дублей: " + removeFiles);
-				doubleFileName.setListData(listDoubleFileName);
-				model.addElement("Перемещено дублей: " + removeFiles);*/
-
-				//JOptionPane.showMessageDialog(null, "Error create folder name " + sourceDirNameDouble.getText());
+				} else {
+					removeBad();
+					return true;
+				}
+			} else
 				return false;
 		}
 		
 		public boolean createOrExistsDir(File dirCreate) {
-			if(dirCreate.exists()) { // TODO проверить работу
-				JOptionPane.showMessageDialog(null, "111Error, folder is name \"" + dirCreate.getName() + "\" is exists, set new name folder");
+			if(dirCreate.exists()) { // TODO Тестирование Проверить работу
+				JOptionPane.showMessageDialog(null, "Error, folder is name \"" + dirCreate.getName() + "\" is exists, set new name folder");
 				return false;
 			}
 			else if(dirCreate.mkdir())
 				return true;
-			else {
-				JOptionPane.showMessageDialog(null, "Error create folder name " + sourceDirNameDouble.getText());
+			else {// TODO Тестирование Проверить работу
+				JOptionPane.showMessageDialog(null, "Error create folder name " + dirCreate.getName());
 				return false;
 			}
 		}
 		
-		public void removeBad(boolean isRemoveBad, String sourceBad) {
-			for(File f : listFile)
-				if(!openImage(f))
-					listFile.remove(f);
+		public void removeBad() {
+			int i = 0;
+			while(i < listFile.size()) {
+				File f = listFile.get(i);
+					if(!openImage(f)) {
+						listDoubleFileName.add("Remove file " + f.getName());
+						doubleFileName.setListData(listDoubleFileName);
+						listFile.remove(f);
+					}
+					else
+						i++;
+			}
 		}
 	
 		public boolean openImage(File f) {
