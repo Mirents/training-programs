@@ -23,7 +23,6 @@ public class FindAndReplaceDoubleImage {
 	JList<String> doubleFileName;
 	JLabel labelSource;
 
-	DefaultListModel<String> model = new DefaultListModel<String>();
 	Vector<String> listDoubleFileName = new Vector<String>();
 	JFileChooser fileOpen = new JFileChooser();
 
@@ -78,7 +77,7 @@ public class FindAndReplaceDoubleImage {
 		BoxPane.add(Box2);
 		BoxPane.add(javax.swing.Box.createVerticalStrut(5));
 		
-		doubleFileName = new JList<String>(model);
+		doubleFileName = new JList<String>();
 		doubleFileName.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		JScrollPane theList = new JScrollPane(doubleFileName);
 		doubleFileName.setListData(listDoubleFileName);
@@ -116,14 +115,26 @@ public class FindAndReplaceDoubleImage {
 			if(getListFile(fileOpen.getSelectedFile())) {
 				deleteNoImage(); // TODO Сделать Написать метод удаления не картинок
 				if(createDirectory(fileOpen.getSelectedFile()))
-					System.out.println(listFile.toString());
+					workToListFile(dirToDouble.getAbsolutePath());
+				/*for(File f : listFile) {
+					listDoubleFileName.add(f.getName());
+					doubleFileName.setListData(listDoubleFileName);
+				}*/
 			}
 			isWork = false;
 		}
 
 		public void deleteNoImage() {
-			/*for(File f : listFile)
-				System.out.println(f.getName().substring(f.getName().length()-3, f.getName().length()));*/
+					
+			int i = 0;
+			while(i < listFile.size()) {
+				File f = listFile.get(i);
+										
+				if(!f.getName().substring(f.getName().length()-3, f.getName().length()).equals("jpg")) {
+					listFile.remove(f);
+				} else
+					i++;
+			}
 			//listFile.removeIf(f -> (f.getName().substring(f.getName().length()-3, f.getName().length()) == "jpg"));
 		}
 		
@@ -145,13 +156,12 @@ public class FindAndReplaceDoubleImage {
 				if(CheckRemoveBad.isSelected()) {
 					dirToBad = new File(dir.getAbsolutePath() + "/" + sourceDirNameBadFile.getText());
 					if(createOrExistsDir(dirToBad)) {
-						// TODO Исправить Каталог для битых файлов успешно создан, можно перемещать их
-						removeBad();
+						removeBadFromList(true);
 						return true;
 					} else
 						return false;
 				} else {
-					removeBad();
+					removeBadFromList(false);
 					return true;
 				}
 			} else
@@ -171,21 +181,26 @@ public class FindAndReplaceDoubleImage {
 			}
 		}
 		
-		public void removeBad() {
+		public void removeBadFromList(boolean inDir) {
 			int i = 0;
 			while(i < listFile.size()) {
 				File f = listFile.get(i);
-					if(!openImage(f)) {
-						listDoubleFileName.add("Remove file " + f.getName());
-						doubleFileName.setListData(listDoubleFileName);
+								
+				if(!isOpenImage(f)) {
+					setStringLine("Bad file " + f.getName());
+					if(inDir) {
+						if(removeFile(f, dirToBad.getAbsolutePath()))
+							setStringLine(f.getName() + " removing complete");
+						else
+							setStringLine(f.getName() + " error, don`t remove");
+					} else
 						listFile.remove(f);
-					}
-					else
-						i++;
+				} else
+					i++;
 			}
 		}
-	
-		public boolean openImage(File f) {
+		
+		public boolean isOpenImage(File f) {
 			try {
 				ImageIO.read(f);
 			} catch(IOException e) { return false; }
@@ -195,65 +210,64 @@ public class FindAndReplaceDoubleImage {
 		public void workToListFile(String source) {
 			int i = 0;
 			int j = 0;
-			boolean endList = false;
-			
-			while(true) {
-				endList = false;
+
+			// Первый этап отбора сначала по именам, а затем с проверкой содержимого
+			while(i < listFile.size()) {
 				j = 0;
-				while(!endList) {
-					if(j == listFile.size()-1) {
-						endList = true;
-					}
-					else {
-						//String s1 = listFile.get(i).getName().substring(0, listFile.get(i).getName().length()-4);
-						//String s2 = listFile.get(j).getName().substring(0, listFile.get(j).getName().length()-4);
-			
-						//System.out.println("i= " + i + " j= " + j + " Сравниваю файлы: " + s1 + " " + s2);
+				while(j < listFile.size()) {
+					if(i != j) {
+						String s1 = listFile.get(i).getName().substring(0, listFile.get(i).getName().length()-4);
+						String s2 = listFile.get(j).getName().substring(0, listFile.get(j).getName().length()-4);
 						
-						if(i != j) {
+						if(s1.contains(s2) || s2.contains(s1)) {
 							float f = getContentFile(listFile.get(i), listFile.get(j));
-							if(f >= 99.0f) {
-								if(removeFile(listFile.get(j), source)) {
-									//i = -1;
-									endList = true;
-								} else {
-									/*listDoubleFileName.add("Dont remove file " + listFile.get(j).getName());
-									doubleFileName.setListData(listDoubleFileName);*/
-									model.addElement("Dont remove file " + listFile.get(j).getName());
-									System.out.println("Dont remove file " + listFile.get(j).getName());
-								}
-							} else if(f >= 20.0f) {
-								/*listDoubleFileName.add("Совпадение файлов: " + listFile.get(i).getName() + " " + listFile.get(j).getName() +
-										" - " + f + " %");
-								doubleFileName.setListData(listDoubleFileName);*/
-								model.addElement("Совпадение файлов: " + listFile.get(i).getName() + " " + listFile.get(j).getName() +
-										" - " + f + " %");
-								System.out.println("Совпадение файлов: " + listFile.get(i).getName() + " " + listFile.get(j).getName() +
-										" - " + f + " %");
-							} else if(f == -1f) {
-								/*listDoubleFileName.add("Один из файлов поврежден: " + listFile.get(i).getName() + " " + listFile.get(j).getName() +
-										" - " + f + " %");
-								doubleFileName.setListData(listDoubleFileName);*/
-								model.addElement("Один из файлов поврежден: " + listFile.get(i).getName() + " " + listFile.get(j).getName() +
-										" - " + f + " %");
-								System.out.println("Один из файлов поврежден: " + listFile.get(i).getName() + " " + listFile.get(j).getName() +
-										" - " + f + " %");
-							} else if(f == -2f) {
-								System.out.println("NullPointerException: " + listFile.get(i).getName() + " " + listFile.get(j).getName() +
-								" - " + f + " %");
-							}
+							if(decisionToRemove(listFile.get(i), listFile.get(j), f, source))
+								System.out.println("Stage 1 " + i + " " + j);
 						}
-						j++;
 					}
+					j++;
 				}
-				
-				if(i == listFile.size()-1)
-					break;
-				else
-					i++;
+				i++;
 			}
-	}
-	
+			
+			// Второй этап, с проверкой только содержимого
+			i = 0;
+			while(i < listFile.size()) {
+				j = 0;
+				while(j < listFile.size()) {
+					if(i != j) {
+						float f = getContentFile(listFile.get(i), listFile.get(j));
+						if(decisionToRemove(listFile.get(i), listFile.get(j), f, source))
+							System.out.println("Stage 2 " + i + " " + j);
+					}
+					j++;
+				}
+				i++;
+			}
+			
+		}
+
+		public boolean decisionToRemove(File file1, File file2, float f, String source) {
+			if(f >= 99.0f) {
+				if(removeFile(file2, source)) {
+					return true;
+				} else
+					setStringLine("Don`t remove file " + file2.getName());
+			} else if(f >= 50.0f) {
+				setStringLine("Совпадение файлов: " + file1.getName() + " " + file2.getName() +
+						" - " + f + " %");
+				System.out.println("Совпадение файлов: " + file1.getName() + " " + file2.getName() +
+						" - " + f + " %");
+			} else if(f == -1f) {
+				setStringLine("Один из файлов поврежден: " + file1 + " " + file2.getName());
+				System.out.println("Один из файлов поврежден: " + file1 + " " + file2.getName());
+			} else if(f == -2f) {
+				setStringLine("Error - NullPointerException: " + file1.getName() + " " + file2.getName());
+				System.out.println("Error - NullPointerException: " + file1.getName() + " " + file2.getName());
+			}
+			return false;
+		}
+		
 		public float getContentFile(File s1, File s2) {
 			BufferedImage img1 = null;
 			BufferedImage img2 = null;
@@ -290,16 +304,20 @@ public class FindAndReplaceDoubleImage {
 	
 		public boolean removeFile(File f, String source) {
 			if(f.renameTo((new File(source + "/" + f.getName())))) {
+				setStringLine(f.getName() + " removing complete");
 				listFile.remove(f);
-				/*listDoubleFileName.add(f.getName());
-				doubleFileName.setListData(listDoubleFileName);*/
-				model.addElement("Remove file " + f.getName());
 				removeFiles++;
-				System.out.println("remove " + f.getName());
 				return true;
 			}
-			else
+			else {
+				listFile.remove(f);
 				return false;
+			}
+		}
+		
+		public void setStringLine(String s) {
+			listDoubleFileName.add(s);
+			doubleFileName.setListData(listDoubleFileName);
 		}
 	}
 }
