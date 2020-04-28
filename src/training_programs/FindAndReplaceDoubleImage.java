@@ -52,8 +52,6 @@ public class FindAndReplaceDoubleImage {
 		JButton buttonOpenCatalog = new JButton("Open Catalog");
 		buttonOpenCatalog.addActionListener(new MyOpenCatalogListener());
 		Box0.add(buttonOpenCatalog);
-		labelOperation = new JLabel("Set settings");
-		Box0.add(labelOperation);
 		BoxPane.add(Box0);
 		BoxPane.add(javax.swing.Box.createVerticalStrut(5));
 
@@ -78,6 +76,9 @@ public class FindAndReplaceDoubleImage {
 		Box2.add(sourceDirNameBadFile);
 		BoxPane.add(Box2);
 		BoxPane.add(javax.swing.Box.createVerticalStrut(5));
+		
+		labelOperation = new JLabel("Set settings");
+		BoxPane.add(labelOperation);
 		
 		doubleFileName = new JList<String>();
 		doubleFileName.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -199,9 +200,9 @@ public class FindAndReplaceDoubleImage {
 		}
 		
 		public boolean isOpenImage(File f) {
-			/*try {
+			try {
 				ImageIO.read(f);
-			} catch(IOException e) { return false; }*/
+			} catch(IOException e) { return false; }
 			return true;
 		}
 		
@@ -210,7 +211,7 @@ public class FindAndReplaceDoubleImage {
 			int j = 0;
 
 			// Первый этап отбора сначала по именам, а затем с проверкой содержимого
-			/*while(i < listFile.size()) {
+			while(i < listFile.size()) {
 				j = 0;
 				while(j < listFile.size()) {
 					if(i != j) {
@@ -219,14 +220,14 @@ public class FindAndReplaceDoubleImage {
 						labelOperation.setText("Stage 1: " + (i+1) + " / " + listFile.size());
 						
 						if(s1.contains(s2) || s2.contains(s1)) {
-							float f = getContentFile(listFile.get(i), listFile.get(j));
+							float f = getContentFile(listFile.get(i), listFile.get(j), 5);
 							decisionToRemove(listFile.get(i), listFile.get(j), f, source);
 						}
 					}
 					j++;
 				}
 				i++;
-			}*/
+			}
 			
 			// Второй этап, с проверкой только содержимого
 			i = 0;
@@ -235,7 +236,7 @@ public class FindAndReplaceDoubleImage {
 				while(j < listFile.size()) {
 					if(i != j) {
 						labelOperation.setText("Stage 2: " + (i+1) + " / " + (j+1) + " / " + listFile.size());
-						float f = getContentFile(listFile.get(i), listFile.get(j), 2);
+						float f = getContentFile(listFile.get(i), listFile.get(j), 5);
 						decisionToRemove(listFile.get(i), listFile.get(j), f, source);
 					}
 					j++;
@@ -250,7 +251,7 @@ public class FindAndReplaceDoubleImage {
 			if(f >= 99.0f) {
 				if(removeFile(file2, source)) {
 					setStringLine(file2.getName() + " removing complete");
-					System.out.println("Файл перенесен: " + file2.getName());
+					//System.out.println("Файл перенесен: " + file2.getName());
 					return true;
 				} else
 					setStringLine("Don`t remove file " + file2.getName());
