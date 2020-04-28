@@ -7,6 +7,7 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.event.*;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.*;
@@ -22,14 +23,12 @@ public class FindAndReplaceDoubleImage {
 	JCheckBox CheckRemoveBad;
 	JList<String> doubleFileName;
 	JLabel labelSource;
+	JLabel labelOperation;
 
 	Vector<String> listDoubleFileName = new Vector<String>();
 	JFileChooser fileOpen = new JFileChooser();
 
 	int removeFiles;
-	//boolean removeBadFile = true;
-	//String sourceDouble;
-	//String sourceBad;
 	boolean isWork = false;
 	File dirToDouble;
 	File dirToBad;
@@ -43,16 +42,19 @@ public class FindAndReplaceDoubleImage {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setResizable(false);
 		frame.setBounds(new Rectangle(100, 100, 400, 300));
-		//background.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		
 		Box BoxPane = Box.createVerticalBox();
 		BoxPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		Box Box0 = Box.createHorizontalBox();
 		Box Box1 = Box.createVerticalBox();
 		Box Box2 = Box.createVerticalBox();
 		
 		JButton buttonOpenCatalog = new JButton("Open Catalog");
 		buttonOpenCatalog.addActionListener(new MyOpenCatalogListener());
-		BoxPane.add(buttonOpenCatalog);
+		Box0.add(buttonOpenCatalog);
+		labelOperation = new JLabel("Set settings");
+		Box0.add(labelOperation);
+		BoxPane.add(Box0);
 		BoxPane.add(javax.swing.Box.createVerticalStrut(5));
 
 		labelSource = new JLabel("Source working directory: ");
@@ -116,10 +118,6 @@ public class FindAndReplaceDoubleImage {
 				deleteNoImage(); // TODO Сделать Написать метод удаления не картинок
 				if(createDirectory(fileOpen.getSelectedFile()))
 					workToListFile(dirToDouble.getAbsolutePath());
-				/*for(File f : listFile) {
-					listDoubleFileName.add(f.getName());
-					doubleFileName.setListData(listDoubleFileName);
-				}*/
 			}
 			isWork = false;
 		}
@@ -129,13 +127,12 @@ public class FindAndReplaceDoubleImage {
 			int i = 0;
 			while(i < listFile.size()) {
 				File f = listFile.get(i);
-										
-				if(!f.getName().substring(f.getName().length()-3, f.getName().length()).equals("jpg")) {
+				String ras = f.getName().substring(f.getName().length()-3, f.getName().length());				
+				if(!ras.toLowerCase().equals("jpg")) {
 					listFile.remove(f);
 				} else
 					i++;
 			}
-			//listFile.removeIf(f -> (f.getName().substring(f.getName().length()-3, f.getName().length()) == "jpg"));
 		}
 		
 		public boolean getListFile(File dir) {
@@ -185,7 +182,8 @@ public class FindAndReplaceDoubleImage {
 			int i = 0;
 			while(i < listFile.size()) {
 				File f = listFile.get(i);
-								
+				
+				labelOperation.setText("Find Bad Image " + i + " / " + listFile.size());
 				if(!isOpenImage(f)) {
 					setStringLine("Bad file " + f.getName());
 					if(inDir) {
@@ -201,9 +199,9 @@ public class FindAndReplaceDoubleImage {
 		}
 		
 		public boolean isOpenImage(File f) {
-			try {
+			/*try {
 				ImageIO.read(f);
-			} catch(IOException e) { return false; }
+			} catch(IOException e) { return false; }*/
 			return true;
 		}
 		
@@ -212,23 +210,23 @@ public class FindAndReplaceDoubleImage {
 			int j = 0;
 
 			// Первый этап отбора сначала по именам, а затем с проверкой содержимого
-			while(i < listFile.size()) {
+			/*while(i < listFile.size()) {
 				j = 0;
 				while(j < listFile.size()) {
 					if(i != j) {
 						String s1 = listFile.get(i).getName().substring(0, listFile.get(i).getName().length()-4);
 						String s2 = listFile.get(j).getName().substring(0, listFile.get(j).getName().length()-4);
+						labelOperation.setText("Stage 1: " + (i+1) + " / " + listFile.size());
 						
 						if(s1.contains(s2) || s2.contains(s1)) {
 							float f = getContentFile(listFile.get(i), listFile.get(j));
-							if(decisionToRemove(listFile.get(i), listFile.get(j), f, source))
-								System.out.println("Stage 1 " + i + " " + j);
+							decisionToRemove(listFile.get(i), listFile.get(j), f, source);
 						}
 					}
 					j++;
 				}
 				i++;
-			}
+			}*/
 			
 			// Второй этап, с проверкой только содержимого
 			i = 0;
@@ -236,20 +234,23 @@ public class FindAndReplaceDoubleImage {
 				j = 0;
 				while(j < listFile.size()) {
 					if(i != j) {
-						float f = getContentFile(listFile.get(i), listFile.get(j));
-						if(decisionToRemove(listFile.get(i), listFile.get(j), f, source))
-							System.out.println("Stage 2 " + i + " " + j);
+						labelOperation.setText("Stage 2: " + (i+1) + " / " + (j+1) + " / " + listFile.size());
+						float f = getContentFile(listFile.get(i), listFile.get(j), 2);
+						decisionToRemove(listFile.get(i), listFile.get(j), f, source);
 					}
 					j++;
 				}
 				i++;
 			}
 			
+			// TODO Третий этап будет включать проверку файлов с одиночными именами
 		}
 
 		public boolean decisionToRemove(File file1, File file2, float f, String source) {
 			if(f >= 99.0f) {
 				if(removeFile(file2, source)) {
+					setStringLine(file2.getName() + " removing complete");
+					System.out.println("Файл перенесен: " + file2.getName());
 					return true;
 				} else
 					setStringLine("Don`t remove file " + file2.getName());
@@ -268,11 +269,13 @@ public class FindAndReplaceDoubleImage {
 			return false;
 		}
 		
-		public float getContentFile(File s1, File s2) {
+		public float getContentFile(File s1, File s2, int koeff) {
 			BufferedImage img1 = null;
 			BufferedImage img2 = null;
 			float percent = 0f;
 			int wImg1, hImg1, wImg2, hImg2;
+			int numPixelSee = 0;
+			int koeffW, koeffH;
 			
 			try {
 				img1 = ImageIO.read(s1);
@@ -289,22 +292,32 @@ public class FindAndReplaceDoubleImage {
 			
 			if(wImg1 != wImg2 || hImg1 != hImg2)
 				return 0f;
-	
-			for(int i = 0; i < wImg1; i++)
-				for(int j = 0; j < hImg1; j++) {
-					int p1 = img1.getRGB(i, j);
-					int p2 = img2.getRGB(i, j);
-					if(p1 != p2)
+
+			//long st, en, dur1, dur2;
+			//st = System.nanoTime();
+			
+			koeffW = (int)(wImg1 / koeff);
+			koeffH = (int)(hImg1 / koeff);
+			
+			for(int i = koeffW; i < wImg1; i+=koeffW)
+				for(int j = koeffH; j < hImg1; j+=koeffH) {
+					numPixelSee++;
+					int p = Math.abs(img1.getRGB(i, j) - img2.getRGB(i, j));
+					if(p != 0)
 						percent++;
 				}
-	
-			float f = 100.0f - (percent*100.0f/(wImg1*hImg1));
+			/*en = System.nanoTime();
+			dur1 = en-st;
+			dur1 = TimeUnit.MILLISECONDS.convert(dur1, TimeUnit.NANOSECONDS);
+			durNum++;
+			System.out.println("Work file " + dur1 + " - " + dur2 + " sred " + (durSred1/durNum) + " - " + (durSred2/durNum));*/
+			
+			float f = 100.0f - (percent*100.0f/(numPixelSee));
 			return f;
 		}
 	
 		public boolean removeFile(File f, String source) {
 			if(f.renameTo((new File(source + "/" + f.getName())))) {
-				setStringLine(f.getName() + " removing complete");
 				listFile.remove(f);
 				removeFiles++;
 				return true;
