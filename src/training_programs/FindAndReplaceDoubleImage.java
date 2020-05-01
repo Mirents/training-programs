@@ -1,4 +1,4 @@
-package training_programs;
+//package training_programs;
 
 import java.io.*;
 import java.awt.*;
@@ -43,24 +43,24 @@ public class FindAndReplaceDoubleImage {
 	public static void main(String [] args) {
 		new FindAndReplaceDoubleImage().go();
 	}
-	
+
 	public void go() {
 		frame = new JFrame("Find and Replace double Image");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setResizable(false);
 		frame.setBounds(new Rectangle(100, 100, 400, 300));
-		
+
 		Box BoxPane = Box.createVerticalBox();
 		BoxPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		Box Box0 = Box.createHorizontalBox();
 		Box Box1 = Box.createVerticalBox();
 		Box Box2 = Box.createVerticalBox();
-		
+
 		buttonOpenCatalog = new JButton("Open Catalog");
 		buttonOpenCatalog.addActionListener(new MyOpenCatalogListener());
 		Box0.add(buttonOpenCatalog);
 		BoxPane.add(Box0);
-		
+
 		buttonStart = new JButton("Start");
 		buttonStart.addActionListener(new MyStartListener());
 		Box0.add(buttonStart);
@@ -74,10 +74,10 @@ public class FindAndReplaceDoubleImage {
 					FandR.interrupt();
 			}
 		});
-		
+
 		Box0.add(buttonStop);
 		BoxPane.add(Box0);
-		
+
 		labelSource = new JLabel("Source working directory: ");
 		sourceDirNameDouble = new JTextField("double_image");
 		Box1.add(labelSource);
@@ -95,19 +95,19 @@ public class FindAndReplaceDoubleImage {
 					sourceDirNameBadFile.setEnabled(CheckRemoveBad.isSelected());
 			}
 		});
-		
+
 		CheckDeep = new JCheckBox("Deep");
 		CheckDeep.setSelected(false);
-		
+
 		Box2.add(CheckDeep);
 		Box2.add(CheckRemoveBad);
 		Box2.add(sourceDirNameBadFile);
 		BoxPane.add(Box2);
 		BoxPane.add(javax.swing.Box.createVerticalStrut(5));
-		
+
 		labelOperation = new JLabel("Set settings");
 		BoxPane.add(labelOperation);
-		
+
 		doubleFileName = new JList<String>();
 		doubleFileName.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		JScrollPane theList = new JScrollPane(doubleFileName);
@@ -135,7 +135,7 @@ public class FindAndReplaceDoubleImage {
 			} catch(Exception e) { e.printStackTrace(); }
 		}
 	}
-	
+
 	public class MyStartListener implements ActionListener {
 		public void actionPerformed(ActionEvent a) {
 			if(isReady && !isWork) {
@@ -150,7 +150,7 @@ public class FindAndReplaceDoubleImage {
 			}
 		}
 	}
-	
+
 	public class FinderAndRemover extends Thread {
 
 		@Override
@@ -169,12 +169,12 @@ public class FindAndReplaceDoubleImage {
 			CheckRemoveBad.setEnabled(true);
 		}
 
-		public void deleteNoImage() {					
+		public void deleteNoImage() {
 			int i = 0;
 			while(i < listFile.size()) {
 				File f = listFile.get(i);
 				String extension = f.getName().split("\\.")[1];
-				
+
 				if(!extension.toLowerCase().equals("jpg")) {
 					setStringLine("File " + f.getName() + " is not image");
 					listFile.remove(f);
@@ -182,13 +182,13 @@ public class FindAndReplaceDoubleImage {
 					i++;
 			}
 		}
-		
+
 		public void removeOneNameFile() {
 			int i = 0;
 			while(i < listFile.size()) {
 				File f = listFile.get(i);
 				String filename = f.getName().split("\\.")[0];
-				
+
 				if(filename.length() == 1) {
 					listFileOneName.add(f);
 					listFile.remove(f);
@@ -203,7 +203,7 @@ public class FindAndReplaceDoubleImage {
 					listFile.add(f);
 			}
 		}
-		
+
 		public boolean getListFile(File dir) {
 			listFile = new ArrayList<>(Arrays.asList(dir.listFiles()));
 			listFile.removeIf(f -> (f.isDirectory()));
@@ -217,23 +217,23 @@ public class FindAndReplaceDoubleImage {
 
 		public boolean createDirectory(File dir) {
 			dirToDouble = new File(dir.getAbsolutePath() + "/" + sourceDirNameDouble.getText());
-			
+
 			if(createOrExistsDir(dirToDouble)) {
 				if(CheckRemoveBad.isSelected()) {
 					dirToBad = new File(dir.getAbsolutePath() + "/" + sourceDirNameBadFile.getText());
 					if(createOrExistsDir(dirToBad)) {
-						removeBadFromList(true);
+						//removeBadFromList(true);
 						return true;
 					} else
 						return false;
 				} else {
-					removeBadFromList(false);
+					//removeBadFromList(false);
 					return true;
 				}
 			} else
 				return false;
 		}
-		
+
 		public boolean createOrExistsDir(File dirCreate) {
 			if(dirCreate.exists()) { // TODO Тестирование Проверить работу
 				JOptionPane.showMessageDialog(null, "Error, folder is name \"" + dirCreate.getName() + "\" is exists, set new name folder");
@@ -246,12 +246,12 @@ public class FindAndReplaceDoubleImage {
 				return false;
 			}
 		}
-		
+
 		public void removeBadFromList(boolean inDir) {
 			int i = 0;
 			while(i < listFile.size()) {
 				File f = listFile.get(i);
-				
+
 				labelOperation.setText("Find Bad Image " + i + " / " + listFile.size());
 				if(!isOpenImage(f)) {
 					setStringLine("Bad file " + f.getName());
@@ -266,26 +266,26 @@ public class FindAndReplaceDoubleImage {
 					i++;
 			}
 		}
-		
+
 		public boolean isOpenImage(File f) {
 			try {
 					ImageIO.read(f);
 			} catch(IOException e) { return false; }
 			return true;
 		}
-		
+
 		public void workToListFile(String source) {
 			int i = 0;
 			int j = 0;
 
 			// Первый этап отбора сначала по именам, а затем с проверкой содержимого
-			while(i < listFile.size()) {
+			/*while(i < listFile.size()) {
 				j = i + 1;
 				while(j < listFile.size()) {
 					String s1 = listFile.get(i).getName().substring(0, listFile.get(i).getName().length()-4);
 					String s2 = listFile.get(j).getName().substring(0, listFile.get(j).getName().length()-4);
 					labelOperation.setText("Stage 1: " + (i+1) + " / " + listFile.size());
-						
+
 					if(s1.contains(s2) || s2.contains(s1)) {
 						float f = getContentFile(getImageFromFile(listFile.get(i)), getImageFromFile(listFile.get(j)), 5);
 						decisionToRemove(listFile.get(i), listFile.get(j), f, source);
@@ -293,13 +293,13 @@ public class FindAndReplaceDoubleImage {
 					j++;
 				}
 				i++;
-			}
+			}*/
 
 			if(CheckDeep.isSelected()) {
 				addOneNameFile();
-	
+
 				// Второй этап, с проверкой только содержимого
-				i = 33;
+				i = 205;
 				while(i < listFile.size()) {
 					j = i + 1;
 					BufferedImage img1 = getImageFromFile(listFile.get(i));
@@ -336,20 +336,20 @@ public class FindAndReplaceDoubleImage {
 			}
 			return false;
 		}
-		
+
 		public float getContentFile(BufferedImage img1, BufferedImage img2, int koeff) {
 			float percent = 0f;
 			int wImg1, hImg1, wImg2, hImg2;
 			int numPixelSee = 0;
 			int koeffW, koeffH;
-			
+
 			if(img1 == null || img2 == null)
 				return -1f;
-			
+
 			try {
 				wImg1 = img1.getWidth();
 				hImg1 = img1.getHeight();
-	
+
 				wImg2 = img2.getWidth();
 				hImg2 = img2.getHeight();
 			} catch(NullPointerException e) { return -2f; }
@@ -357,11 +357,11 @@ public class FindAndReplaceDoubleImage {
 			if(wImg1 != wImg2 || hImg1 != hImg2)
 				return 0f;
 
-			
-			
+
+
 			koeffW = (int)(wImg1 / koeff);
 			koeffH = (int)(hImg1 / koeff);
-			
+
 			for(int i = koeffW; i < wImg1; i+=koeffW)
 				for(int j = koeffH; j < hImg1; j+=koeffH) {
 					numPixelSee++;
@@ -373,12 +373,12 @@ public class FindAndReplaceDoubleImage {
 			// Измерить время выполнения программы
 			/*long st = 0, en = 0, dur = 0;
 			st = System.nanoTime();*/
-			
+
 			/*en = System.nanoTime();
 			dur = en-st;
 			dur = TimeUnit.MILLISECONDS.convert(dur, TimeUnit.NANOSECONDS);
 			durSred1 += dur;
-			
+
 			numPixelSee = 0;
 			percent = 0;
 			st = System.nanoTime();*/
@@ -393,23 +393,23 @@ public class FindAndReplaceDoubleImage {
 			dur = en-st;
 			dur = TimeUnit.MILLISECONDS.convert(dur, TimeUnit.NANOSECONDS);
 			durSred2 += dur;
-			
+
 			durNum++;
 			System.out.println("Work file " + " - " + " sred " + (durSred1/durNum) + " - " + (durSred2/durNum));*/
-			
+
 			float f = 100.0f - (percent*100.0f/(numPixelSee));
 			return f;
 		}
-		
+
 		public BufferedImage getImageFromFile(File f) {
 			BufferedImage img = null;
 			try {
 				img = ImageIO.read(f);
 			} catch(IOException e) { return null; }
-			
+
 			return img;
 		}
-	
+
 		public boolean removeFile(File f, String source) {
 			if(f.renameTo((new File(source + "/" + f.getName())))) {
 				listFile.remove(f);
@@ -421,13 +421,13 @@ public class FindAndReplaceDoubleImage {
 				return false;
 			}
 		}
-		
+
 		public void setStringLine(String s) {
 			listDoubleFileName.add(s);
 			doubleFileName.setListData(listDoubleFileName);
 		}
 	}
-	
+
 	private static final class Resource {
 		static final String [] ERR0 = {"Error! Folder`s name is empty!", "Ошибка, имя папки отсутствует!"};
 	}
