@@ -77,6 +77,10 @@ public class GameXO {
 		float[] selButton = {1f, 1f}; // Переменная-коэффициент наведения указателя мыши
 		Color foneColor = new Color(30, 150, 220);
 		
+		StartWindow () {
+			this.add(new JLabel("dfsfa"));
+		}
+		
 		public void paintComponent(Graphics g) {
 			paintBackground(g);
 			paintButton(g);

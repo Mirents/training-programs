@@ -12,33 +12,37 @@ import java.util.Arrays;
 import java.util.*;
 import javax.swing.border.EmptyBorder;
 
-import javax.swing.JOptionPane;
-
 public class FindAndReplaceDoubleImage {
-	JFrame frame;
-	List<File> listFile;
-	List<File> listFileOneName = new ArrayList<File>();
-	JTextField sourceDirNameDouble;
-	JTextField sourceDirNameBadFile;
-	JCheckBox CheckRemoveBad;
-	JCheckBox CheckDeep;
-	JList<String> doubleFileName;
-	JLabel labelSource;
-	JLabel labelOperation;
-	JFileChooser fileOpen = new JFileChooser();
-	JButton buttonOpenCatalog;
-	JButton buttonStart;
-	JButton buttonStop;
+	JFrame			frame;
+	JTabbedPane		tabbedPane;
+	JTextField		sourceDirNameDouble;
+	JTextField		sourceDirNameBadFile;
+	JCheckBox		checkRemoveBad;
+	JCheckBox		checkDeep;
+	JList<String>	doubleFileName;
+	JLabel			labelSource;
+	JLabel			labelOperation;
+	JFileChooser 	fileOpen = new JFileChooser();
+	JButton 		buttonOpenCatalog;
+	JButton 		buttonStart;
+	JButton 		buttonStop;
+	JLabel			labelGetFileName;
+	JTextField		fileNameFrom;
+	JCheckBox		checkAddDataCreateFile;
+	JLabel			sampleNameFile;
+	JLabel			labelWorkDirectory;
 
-	Vector<String> listDoubleFileName = new Vector<String>();
-
-	int removeFiles;
-	boolean isWork = false;
-	boolean isReady = false;
-	File dirToDouble;
-	File dirToBad;
-	Thread FandR;
-	long durSred1, durSred2, durNum;
+	Vector<String>	listDoubleFileName = new Vector<String>();
+	List<File>		listFile;
+	List<File>		listFileOneName = new ArrayList<File>();
+	
+	int				countRemoveFiles;
+	boolean			isWork = false;
+	boolean			isReady = false;
+	File			dirToDouble;
+	File			dirToBad;
+	Thread			FandR;
+	long			durSred1, durSred2, durNum;
 
 	public static void main(String [] args) {
 		new FindAndReplaceDoubleImage().go();
@@ -50,21 +54,25 @@ public class FindAndReplaceDoubleImage {
 		frame.setResizable(false);
 		frame.setBounds(new Rectangle(100, 100, 400, 300));
 
-		Box BoxPane = Box.createVerticalBox();
-		BoxPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		Box Box0 = Box.createHorizontalBox();
-		Box Box1 = Box.createVerticalBox();
-		Box Box2 = Box.createVerticalBox();
+		BorderLayout layout = new BorderLayout();
+	    JPanel background = new JPanel(layout);
+	    background.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+	    
+		Box backgroundTable = Box.createVerticalBox();
+		backgroundTable.setBorder(new EmptyBorder(5, 5, 5, 5));	
 
+		Box BoxSetupFandR = Box.createVerticalBox();
+		Box BoxSetupRename = Box.createVerticalBox();
+		Box BoxButton = Box.createHorizontalBox();
+		BoxButton.setBorder(new EmptyBorder(5, 5, 5, 5));
+		
 		buttonOpenCatalog = new JButton("Open Catalog");
 		buttonOpenCatalog.addActionListener(new MyOpenCatalogListener());
-		Box0.add(buttonOpenCatalog);
-		BoxPane.add(Box0);
+		BoxButton.add(buttonOpenCatalog);
 
 		buttonStart = new JButton("Start");
 		buttonStart.addActionListener(new MyStartListener());
-		Box0.add(buttonStart);
-		BoxPane.add(Box0);
+		BoxButton.add(buttonStart);
 
 		buttonStop = new JButton("Stop");
 		buttonStop.addActionListener(new ActionListener() {
@@ -74,47 +82,54 @@ public class FindAndReplaceDoubleImage {
 					FandR.interrupt();
 			}
 		});
-
-		Box0.add(buttonStop);
-		BoxPane.add(Box0);
+		BoxButton.add(buttonStop);
 
 		labelSource = new JLabel("Source working directory: ");
 		sourceDirNameDouble = new JTextField("double_image");
-		Box1.add(labelSource);
-		Box1.add(sourceDirNameDouble);
-		BoxPane.add(Box1);
-		BoxPane.add(javax.swing.Box.createVerticalStrut(5));
+		BoxSetupFandR.add(labelSource);
+		BoxSetupFandR.add(sourceDirNameDouble);
+		BoxSetupFandR.add(javax.swing.Box.createVerticalStrut(5));
 
 		sourceDirNameBadFile = new JTextField("bad_image");
-		CheckRemoveBad = new JCheckBox("Move corrupted files to:");
-		CheckRemoveBad.setSelected(true);
-		CheckRemoveBad.addItemListener(new ItemListener() {
+		
+		checkRemoveBad = new JCheckBox("Move corrupted files to:");
+		checkRemoveBad.setSelected(true);
+		checkRemoveBad.addItemListener(new ItemListener() {
 			@Override
 			public void itemStateChanged(ItemEvent arg0) {
 				if(!isWork)
-					sourceDirNameBadFile.setEnabled(CheckRemoveBad.isSelected());
+					sourceDirNameBadFile.setEnabled(checkRemoveBad.isSelected());
 			}
 		});
 
-		CheckDeep = new JCheckBox("Deep");
-		CheckDeep.setSelected(false);
+		checkDeep = new JCheckBox("Deep");
+		checkDeep.setSelected(false);
 
-		Box2.add(CheckDeep);
-		Box2.add(CheckRemoveBad);
-		Box2.add(sourceDirNameBadFile);
-		BoxPane.add(Box2);
-		BoxPane.add(javax.swing.Box.createVerticalStrut(5));
+		Box boxForCheck = Box.createHorizontalBox();
+		boxForCheck.add(checkRemoveBad);
+		boxForCheck.add(checkDeep);
+		BoxSetupFandR.add(boxForCheck);
+		BoxSetupFandR.add(sourceDirNameBadFile);
+		BoxSetupFandR.add(javax.swing.Box.createVerticalStrut(5));
 
 		labelOperation = new JLabel("This step: Open work directory and set settings");
-		BoxPane.add(labelOperation);
 
 		doubleFileName = new JList<String>();
 		doubleFileName.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		JScrollPane theList = new JScrollPane(doubleFileName);
 		doubleFileName.setListData(listDoubleFileName);
-		BoxPane.add(theList);
-
-		frame.getContentPane().add(BoxPane);
+		
+		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		tabbedPane.add("Find and Replace double", BoxSetupFandR);
+		tabbedPane.add("Rename image", BoxSetupRename);
+		
+		backgroundTable.add(tabbedPane);
+		backgroundTable.add(labelOperation);
+		backgroundTable.add(theList);
+		background.add(backgroundTable, BorderLayout.CENTER);
+		background.add(BoxButton, BorderLayout.SOUTH);
+		
+		frame.getContentPane().add(background);
 		frame.pack();
 		frame.setVisible(true);
 	}
@@ -146,7 +161,7 @@ public class FindAndReplaceDoubleImage {
 				buttonOpenCatalog.setEnabled(false);
 				sourceDirNameDouble.setEnabled(false);
 				sourceDirNameBadFile.setEnabled(false);
-				CheckRemoveBad.setEnabled(false);
+				checkRemoveBad.setEnabled(false);
 			}
 		}
 	}
@@ -157,7 +172,7 @@ public class FindAndReplaceDoubleImage {
 		public void run() {
 			if(getListFile(fileOpen.getSelectedFile())) {
 				deleteNoImage();
-				if(CheckDeep.isSelected())
+				if(checkDeep.isSelected())
 					removeOneNameFile();
 				if(createDirectory(fileOpen.getSelectedFile()))
 					workToListFile(dirToDouble.getAbsolutePath());
@@ -165,8 +180,8 @@ public class FindAndReplaceDoubleImage {
 			isWork = false;
 			buttonOpenCatalog.setEnabled(true);
 			sourceDirNameDouble.setEnabled(true);
-			sourceDirNameBadFile.setEnabled(CheckRemoveBad.isSelected());
-			CheckRemoveBad.setEnabled(true);
+			sourceDirNameBadFile.setEnabled(checkRemoveBad.isSelected());
+			checkRemoveBad.setEnabled(true);
 		}
 
 		public void deleteNoImage() {
@@ -219,7 +234,7 @@ public class FindAndReplaceDoubleImage {
 			dirToDouble = new File(dir.getAbsolutePath() + "/" + sourceDirNameDouble.getText());
 
 			if(createOrExistsDir(dirToDouble)) {
-				if(CheckRemoveBad.isSelected()) {
+				if(checkRemoveBad.isSelected()) {
 					dirToBad = new File(dir.getAbsolutePath() + "/" + sourceDirNameBadFile.getText());
 					if(createOrExistsDir(dirToBad)) {
 						removeBadFromList(true);
@@ -295,7 +310,7 @@ public class FindAndReplaceDoubleImage {
 				i++;
 			}
 
-			if(CheckDeep.isSelected()) {
+			if(checkDeep.isSelected()) {
 				addOneNameFile();
 
 				// Второй этап, с проверкой только содержимого
@@ -413,7 +428,7 @@ public class FindAndReplaceDoubleImage {
 		public boolean removeFile(File f, String source) {
 			if(f.renameTo((new File(source + "/" + f.getName())))) {
 				listFile.remove(f);
-				removeFiles++;
+				countRemoveFiles++;
 				return true;
 			}
 			else {
