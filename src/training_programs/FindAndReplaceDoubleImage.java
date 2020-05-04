@@ -26,6 +26,7 @@ public class FindAndReplaceDoubleImage {
 	JButton 		buttonOpenCatalog;
 	JButton 		buttonStart;
 	JButton 		buttonStop;
+	// For rename files
 	JLabel			labelGetFileName;
 	JTextField		fileNameFrom;
 	JCheckBox		checkAddDataCreateFile;
@@ -39,6 +40,7 @@ public class FindAndReplaceDoubleImage {
 	int				countRemoveFiles;
 	boolean			isWork = false;
 	boolean			isReady = false;
+	boolean			isFindAndRemove = true;
 	File			dirToDouble;
 	File			dirToBad;
 	Thread			FandR;
@@ -52,7 +54,7 @@ public class FindAndReplaceDoubleImage {
 		frame = new JFrame("Find and Replace double Image");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setResizable(false);
-		frame.setBounds(new Rectangle(100, 100, 400, 300));
+		frame.setBounds(new Rectangle(100, 100, 300, 200));
 
 		BorderLayout layout = new BorderLayout();
 	    JPanel background = new JPanel(layout);
@@ -66,6 +68,7 @@ public class FindAndReplaceDoubleImage {
 		Box BoxButton = Box.createHorizontalBox();
 		BoxButton.setBorder(new EmptyBorder(5, 5, 5, 5));
 		
+		// Setup Box button
 		buttonOpenCatalog = new JButton("Open Catalog");
 		buttonOpenCatalog.addActionListener(new MyOpenCatalogListener());
 		BoxButton.add(buttonOpenCatalog);
@@ -84,14 +87,16 @@ public class FindAndReplaceDoubleImage {
 		});
 		BoxButton.add(buttonStop);
 
+		// Setup Box for Find and replace image
 		labelSource = new JLabel("Source working directory: ");
 		sourceDirNameDouble = new JTextField("double_image");
-		BoxSetupFandR.add(labelSource);
-		BoxSetupFandR.add(sourceDirNameDouble);
-		BoxSetupFandR.add(javax.swing.Box.createVerticalStrut(5));
-
-		sourceDirNameBadFile = new JTextField("bad_image");
+		Box boxForSource = Box.createHorizontalBox();
+		boxForSource.add(labelSource);
+		boxForSource.add(sourceDirNameDouble);
+		boxForSource.add(javax.swing.Box.createVerticalStrut(5));
+		BoxSetupFandR.add(boxForSource);
 		
+		sourceDirNameBadFile = new JTextField("bad_image");
 		checkRemoveBad = new JCheckBox("Move corrupted files to:");
 		checkRemoveBad.setSelected(true);
 		checkRemoveBad.addItemListener(new ItemListener() {
@@ -107,11 +112,25 @@ public class FindAndReplaceDoubleImage {
 
 		Box boxForCheck = Box.createHorizontalBox();
 		boxForCheck.add(checkRemoveBad);
+		boxForCheck.add(sourceDirNameBadFile);
 		boxForCheck.add(checkDeep);
 		BoxSetupFandR.add(boxForCheck);
-		BoxSetupFandR.add(sourceDirNameBadFile);
 		BoxSetupFandR.add(javax.swing.Box.createVerticalStrut(5));
 
+		// Box Setup rename
+		labelGetFileName = new JLabel("File name:");
+		fileNameFrom = new JTextField();
+		Box boxForFileName = Box.createHorizontalBox();
+		boxForFileName.add(labelGetFileName);
+		boxForFileName.add(fileNameFrom);
+		BoxSetupRename.add(boxForFileName);
+		Box boxForCheckData = Box.createHorizontalBox();
+		checkAddDataCreateFile = new JCheckBox("Add data from image parameter");
+		boxForCheckData.add(checkAddDataCreateFile);
+		sampleNameFile = new JLabel("sample name file");
+		boxForCheckData.add(sampleNameFile);
+		BoxSetupRename.add(boxForCheckData);
+		
 		labelOperation = new JLabel("This step: Open work directory and set settings");
 
 		doubleFileName = new JList<String>();
