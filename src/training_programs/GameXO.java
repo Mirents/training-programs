@@ -4,13 +4,13 @@ import javax.swing.*;
 import java.awt.event.*;
 import java.awt.*;
 
-public class MenuGame {
+public class GameXO {
 	JFrame frame;
 	int stage = 1; // Установка начального значения текущей стадии игры
 	String resultMessage = ""; // Результат игры
 
 	public static void main(String[] args) {
-		new MenuGame().go();
+		new GameXO().go();
 	}
 
 	public void go() {

@@ -1,4 +1,4 @@
-//package training_programs;
+package training_programs;
 
 import java.io.*;
 import java.awt.*;
@@ -105,7 +105,7 @@ public class FindAndReplaceDoubleImage {
 		BoxPane.add(Box2);
 		BoxPane.add(javax.swing.Box.createVerticalStrut(5));
 
-		labelOperation = new JLabel("Set settings");
+		labelOperation = new JLabel("This step: Open work directory and set settings");
 		BoxPane.add(labelOperation);
 
 		doubleFileName = new JList<String>();
@@ -222,12 +222,12 @@ public class FindAndReplaceDoubleImage {
 				if(CheckRemoveBad.isSelected()) {
 					dirToBad = new File(dir.getAbsolutePath() + "/" + sourceDirNameBadFile.getText());
 					if(createOrExistsDir(dirToBad)) {
-						//removeBadFromList(true);
+						removeBadFromList(true);
 						return true;
 					} else
 						return false;
 				} else {
-					//removeBadFromList(false);
+					removeBadFromList(false);
 					return true;
 				}
 			} else
@@ -279,7 +279,7 @@ public class FindAndReplaceDoubleImage {
 			int j = 0;
 
 			// Первый этап отбора сначала по именам, а затем с проверкой содержимого
-			/*while(i < listFile.size()) {
+			while(i < listFile.size()) {
 				j = i + 1;
 				while(j < listFile.size()) {
 					String s1 = listFile.get(i).getName().substring(0, listFile.get(i).getName().length()-4);
@@ -293,13 +293,13 @@ public class FindAndReplaceDoubleImage {
 					j++;
 				}
 				i++;
-			}*/
+			}
 
 			if(CheckDeep.isSelected()) {
 				addOneNameFile();
 
 				// Второй этап, с проверкой только содержимого
-				i = 205;
+				i = 0;
 				while(i < listFile.size()) {
 					j = i + 1;
 					BufferedImage img1 = getImageFromFile(listFile.get(i));
